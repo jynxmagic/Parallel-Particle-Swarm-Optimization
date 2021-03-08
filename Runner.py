@@ -1,58 +1,73 @@
-import objects.Swarm as Swarm
-import objects.Particle as Particle
-import ray
-import sphere_function
+"""Particle search runner.
+
+Utilizes Ray.io to parralelize the search process.
+"""
+
+
 import random
-import Functions
+
+import ray
+
+import helper
+import sphere_function
 
 ray.init()
 
-targetScore = 3000
+taget_score = 3000
+
 
 @ray.remote
-def calculateScore(particle):
-    score = sphere_function.sphere_pp(particle.currPos)
-    particle.currScore = score
+def _calculate_score(particle):
+    score = sphere_function.sphere_pp(particle.curr_pos)
+    particle.curr_score = score
 
-    if(Functions.currentScoreIsBetterThanBestScore(particle.currScore, particle.bestScore)):
-        particle.bestScore = particle.currScore
-        particle.bestPos = particle.currPos
+    if (helper.current_score_is_better_than_best_score(particle.curr_score, particle.best_score)):
+        particle.best_score = particle.curr_score
+        particle.best_pos = particle.curr_pos
         print(particle)
 
-    
     return particle
+
 
 @ray.remote
-def updateParticlePosition(particle, swarmBestPos):
-    #move particles currPos # https://gyazo.com/b52c066fa8aa53bc68e9e161f650c289
-    r = random.randint(1,3)
-    e = (r*particle.velocity)
-    if(particle.bestPos[0] != particle.currPos[0]):
-        e += r* ( particle.bestPos[0] - particle.currPos[0] )
+def _update_particle_position(particle, swarm_best_pos):
+    # move particles currPos
+    # https://gyazo.com/b52c066fa8aa53bc68e9e161f650c289
+    particle_current_position = particle.curr_pos[0]
+    particle_best_position = particle.best_pos[0]
+
+    r = random.randint(1, 3)
+    e = (r * particle.velocity)
+    if (particle_best_position != particle_current_position):
+        e += r * (particle_best_position - particle_current_position)
     else:
-        e += particle.currPos[0]
-    if(particle.currPos[0] != swarmBestPos[0]):
-        e += r* (swarmBestPos[0] - particle.currPos[0])
-    particle.currPos[0] = e
-    #calculate scores
+        e += particle_current_position
+    if(particle_current_position != swarm_best_pos[0]):
+        e += r * (swarm_best_pos[0] - particle_current_position)
+    particle_current_position = e
+    # calculate scores
 
     return particle
 
-def calculateScoresForSwarm(swarm):
-    rayObjRefs = [calculateScore.remote(particle) for particle in swarm.particles]
 
-    scoredParticles = ray.get(rayObjRefs)
+def calculate_scores_for_swarm(swarm):
+    ray_refs = [_calculate_score.remote(particle)
+                for particle in swarm.particles]
 
-    swarm.particles = scoredParticles
+    scored_particles = ray.get(ray_refs)
+
+    swarm.particles = scored_particles
 
     return swarm
 
-def updateSwarmPositions(swarm):
-    swarmBestPos = swarm.swarmBestPos
-    rayObjRefs = [updateParticlePosition.remote(particle, swarmBestPos) for particle in swarm.particles]
 
-    updatedSwarmPositions = ray.get(rayObjRefs)
+def update_swarm_positions(swarm):
+    swarm_best_pos = swarm.swarm_best_pos
+    ray_refs = [_update_particle_position.remote(
+        particle, swarm_best_pos) for particle in swarm.particles]
 
-    swarm.particles = updatedSwarmPositions
+    updated_swarm_positions = ray.get(ray_refs)
+
+    swarm.particles = updated_swarm_positions
 
     return swarm
