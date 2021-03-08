@@ -41,3 +41,5 @@ jobs:
           # Path to use for flake8
           path: .
           # Used for internal tests.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
