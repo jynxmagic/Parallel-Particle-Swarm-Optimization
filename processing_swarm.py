@@ -23,7 +23,9 @@ def _update_swarm_current_best_score(swarm):
     best_pos = swarm.swarm_best_pos
 
     for particle in swarm.particles:
-        if (helper.current_score_is_better_than_best_score(particle.curr_score, best_score)):
+        if helper.current_score_is_better_than_best_score(
+            particle.curr_score, best_score
+        ):
             best_score = particle.curr_score
             best_pos = particle.curr_pos
 
@@ -39,13 +41,13 @@ def run(swarm):
     swarm = _update_swarm_current_best_score(swarm)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     swarm = _init_swarm()
 
     # main loop
     for _loop in range(0, 100):
         run(swarm)
-        print("run: "+str(_loop)+", score: "+str(swarm.swarm_best_score))
+        print("run: " + str(_loop) + ", score: " + str(swarm.swarm_best_score))
 
     print(swarm.swarm_best_pos[0])
     print(swarm.swarm_best_score)
