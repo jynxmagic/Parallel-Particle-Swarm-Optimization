@@ -36,16 +36,20 @@ def _update_particle_position(particle, swarm_best_pos):
     particle_current_position = particle["curr_pos"][0]
     particle_best_position = particle["best_pos"][0]
 
-    r = random.randint(1, 3)
-    e = r * particle["velocity"]
+    random_int = random.randint(1, 3)
+    self_movement = random_int * particle["velocity"]
     if particle_best_position != particle_current_position:
-        e += r * (particle_best_position - particle_current_position)
+        self_movement += random_int * (
+            particle_best_position - particle_current_position
+        )
     else:
-        e += particle_current_position
+        self_movement += particle_current_position
     if particle_current_position != swarm_best_pos[0]:
-        e += r * (swarm_best_pos[0] - particle_current_position)
-    particle_current_position = e
+        self_movement += random_int * (swarm_best_pos[0] - particle_current_position)
+    particle_current_position = self_movement
     # calculate scores
+
+    particle["curr_pos"] = [particle_current_position]
 
     return particle
 
