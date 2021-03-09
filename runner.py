@@ -6,7 +6,7 @@ Utilizes Ray.io to parralelize the search process.
 
 import random
 
-import ray
+import ray  # type: ignore
 
 import helper
 import sphere_function
