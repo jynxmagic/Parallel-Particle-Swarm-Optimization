@@ -2,4 +2,6 @@
 disable=
     import-error,
     missing-module-docstring,
-    missing-function-docstring
+    missing-function-docstring,
+    too-few-public-methods,
+    fixme
