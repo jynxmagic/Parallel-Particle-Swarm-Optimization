@@ -1,5 +1,5 @@
 """Install Processing Swarm."""
-from setuptools import setup
+from setuptools import setup  # type: ignore
 
 setup(
     name="processing_swarm",
