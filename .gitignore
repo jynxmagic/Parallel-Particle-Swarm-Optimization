@@ -1,5 +1,4 @@
 *.pyc
+!.vscode/*.json
 .vscode/
 __pycache__/
-
-!.vscode/settings.json
