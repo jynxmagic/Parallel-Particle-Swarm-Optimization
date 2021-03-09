@@ -5,7 +5,7 @@ import random
 from objects import swarm_object as swarm_obj
 
 
-class SwarmBuilder(object):
+class SwarmBuilder:
     """Object used for creating and returning swarms of set size."""
 
     # default values, can be changed
