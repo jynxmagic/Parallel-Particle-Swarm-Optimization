@@ -2,11 +2,10 @@
 
 import random
 
-from objects import particle_object as particle_obj
 from objects import swarm_object as swarm_obj
 
 
-class SwarmBuilder(object):
+class SwarmBuilder:
     """Object used for creating and returning swarms of set size."""
 
     # default values, can be changed
@@ -31,17 +30,23 @@ class SwarmBuilder(object):
 
         swarm = swarm_obj.Swarm([], [], None)
 
-        [
-            swarm.add_particle(self._build_particle(min_pos, max_pos))
-            for _i in range(self.particle_amount)
-        ]
+        for _ in range(self.particle_amount):
+            particle_to_add = self._build_particle(min_pos, max_pos)
+            swarm.add_particle(particle_to_add)
 
-        swarm.swarm_best_pos = swarm.particles[0].curr_pos
-        swarm.swarm_best_score = swarm.particles[0].curr_score
+        swarm.swarm_best_pos = swarm.particles[0]["curr_pos"]
+        swarm.swarm_best_score = swarm.particles[0]["curr_score"]
 
         return swarm
 
-    def _build_particle(self, min_pos, max_pos):
+    @classmethod
+    def _build_particle(cls, min_pos, max_pos):
         r_velocity = random.randint(-1, 1)
-        pos = [random.randrange(min_pos, max_pos)]
-        return particle_obj.Particle(pos, [], r_velocity)
+        pos = random.randrange(min_pos, max_pos)
+        return {
+            "curr_pos": [pos],
+            "curr_score": None,
+            "best_score": None,
+            "best_pos": [1],
+            "velocity": r_velocity,
+        }

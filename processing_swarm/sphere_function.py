@@ -1,5 +1,8 @@
+import math
+
+
 def sphere_pp(vector):
-    tot = 0
-    for x in vector:
-        tot += x * x
-    return tot
+    if isinstance(vector, int):
+        return vector
+
+    return math.prod(vector)
