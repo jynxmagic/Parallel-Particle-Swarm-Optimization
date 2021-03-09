@@ -31,8 +31,10 @@ class SwarmBuilder(object):
 
         swarm = swarm_obj.Swarm([], [], None)
 
-        [swarm.add_particle(self._build_particle(min_pos, max_pos))
-         for i in range(self.particle_amount)]
+        [
+            swarm.add_particle(self._build_particle(min_pos, max_pos))
+            for _i in range(self.particle_amount)
+        ]
 
         swarm.swarm_best_pos = swarm.particles[0].curr_pos
         swarm.swarm_best_score = swarm.particles[0].curr_score

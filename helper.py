@@ -13,25 +13,25 @@ def current_score_is_better_than_best_score(current_score, best_score):
     Returns:
         bool: True if current score is closer to the target score.
     """
-    if (best_score is None):
+    if best_score is None:
         return True
 
-    if (_current_less_than_best_and_target_lower(current_score, best_score)):
+    if _current_less_than_best_and_target_lower(current_score, best_score):
         return True
 
-    if (_current_more_than_best_and_target_higher(current_score, best_score)):
+    if _current_more_than_best_and_target_higher(current_score, best_score):
         return True
 
     return False
 
 
 def _current_less_than_best_and_target_lower(current_score, best_score):
-    if (target_score <= current_score < best_score):
+    if target_score <= current_score < best_score:
         return True
     return False
 
 
 def _current_more_than_best_and_target_higher(current_score, best_score):
-    if (best_score < current_score <= target_score):
+    if best_score < current_score <= target_score:
         return True
     return False
