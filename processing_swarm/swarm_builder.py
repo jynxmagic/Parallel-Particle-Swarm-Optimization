@@ -31,17 +31,17 @@ class SwarmBuilder(object):
 
         swarm = swarm_obj.Swarm([], [], None)
 
-        [
-            swarm.add_particle(self._build_particle(min_pos, max_pos))
-            for _i in range(self.particle_amount)
-        ]
+        for _ in range(self.particle_amount):
+            particle_to_add = self._build_particle(min_pos, max_pos)
+            swarm.add_particle(particle_to_add)
 
         swarm.swarm_best_pos = swarm.particles[0].curr_pos
         swarm.swarm_best_score = swarm.particles[0].curr_score
 
         return swarm
 
-    def _build_particle(self, min_pos, max_pos):
+    @classmethod
+    def _build_particle(cls, min_pos, max_pos):
         r_velocity = random.randint(-1, 1)
         pos = [random.randrange(min_pos, max_pos)]
         return particle_obj.Particle(pos, [], r_velocity)

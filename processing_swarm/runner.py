@@ -12,8 +12,6 @@ import sphere_function
 
 ray.init()
 
-taget_score = 3000
-
 
 @ray.remote
 def _calculate_score(particle):
@@ -21,7 +19,8 @@ def _calculate_score(particle):
     particle.curr_score = score
 
     if helper.current_score_is_better_than_best_score(
-        particle.curr_score, particle.best_score
+        particle.curr_score,
+        particle.best_score,
     ):
         particle.best_score = particle.curr_score
         particle.best_pos = particle.curr_pos
