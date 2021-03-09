@@ -28,6 +28,6 @@ class Swarm(object):
         """Add a particle to the swarm.
 
         Args:
-            particle (particle): particle to add.
+            particle (dict): particle to add.
         """
         self.particles.append(particle)

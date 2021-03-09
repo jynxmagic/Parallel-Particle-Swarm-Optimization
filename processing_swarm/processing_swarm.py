@@ -25,11 +25,11 @@ def _update_swarm_current_best_score(swarm_to_score):
 
     for particle in swarm_to_score.particles:
         if helper.current_score_is_better_than_best_score(
-            particle.curr_score,
+            particle["curr_score"],
             best_score,
         ):
-            best_score = particle.curr_score
-            best_pos = particle.curr_pos
+            best_score = particle["curr_score"]
+            best_pos = particle["curr_pos"]
 
     swarm_to_score.swarm_best_score = best_score
     swarm_to_score.swarm_best_pos = best_pos

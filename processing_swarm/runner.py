@@ -15,15 +15,15 @@ ray.init()
 
 @ray.remote
 def _calculate_score(particle):
-    score = sphere_function.sphere_pp(particle.curr_pos)
-    particle.curr_score = score
+    score = sphere_function.sphere_pp(particle["curr_pos"])
+    particle["curr_score"] = score
 
     if helper.current_score_is_better_than_best_score(
-        particle.curr_score,
-        particle.best_score,
+        particle["curr_score"],
+        particle["best_score"],
     ):
-        particle.best_score = particle.curr_score
-        particle.best_pos = particle.curr_pos
+        particle["best_score"] = particle["curr_score"]
+        particle["best_pos"] = particle["curr_pos"]
         print(particle)
 
     return particle
@@ -33,11 +33,11 @@ def _calculate_score(particle):
 def _update_particle_position(particle, swarm_best_pos):
     # move particles currPos
     # https://gyazo.com/b52c066fa8aa53bc68e9e161f650c289
-    particle_current_position = particle.curr_pos[0]
-    particle_best_position = particle.best_pos[0]
+    particle_current_position = particle["curr_pos"][0]
+    particle_best_position = particle["best_pos"][0]
 
     r = random.randint(1, 3)
-    e = r * particle.velocity
+    e = r * particle["velocity"]
     if particle_best_position != particle_current_position:
         e += r * (particle_best_position - particle_current_position)
     else:
