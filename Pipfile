@@ -8,6 +8,9 @@ ray = "*"
 
 [dev-packages]
 python-dev-tools = "*"
+pylint = "*"
+black = "*"
+mypy = "*"
 
 [requires]
 python_version = "3.8"
