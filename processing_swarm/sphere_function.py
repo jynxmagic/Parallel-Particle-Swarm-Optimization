@@ -2,7 +2,9 @@ import math
 
 
 def sphere_pp(vector):
-    if isinstance(vector, int):
-        return vector
+    tot = 0
 
-    return math.prod(vector)
+    for value in vector:
+        tot += value * value
+
+    return tot

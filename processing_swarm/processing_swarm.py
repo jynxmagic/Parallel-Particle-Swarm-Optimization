@@ -51,7 +51,7 @@ if __name__ == "__main__":
     swarm = _init_swarm()
 
     # main loop
-    for _loop in range(0, 100):
+    for _loop in range(0, 1000):
         swarm = run(swarm)
         print("run: " + str(_loop) + ", score: " + str(swarm.swarm_best_score))
 
