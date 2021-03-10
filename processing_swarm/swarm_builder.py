@@ -42,11 +42,14 @@ class SwarmBuilder:
     @classmethod
     def _build_particle(cls, min_pos, max_pos):
         r_velocity = random.randint(-1, 1)
+        while r_velocity == 0:
+            r_velocity = random.randint(-1, 1)
+
         pos = random.randrange(min_pos, max_pos)
         return {
             "curr_pos": [pos],
             "curr_score": None,
             "best_score": None,
-            "best_pos": [1],
+            "best_pos": [pos],
             "velocity": r_velocity,
         }

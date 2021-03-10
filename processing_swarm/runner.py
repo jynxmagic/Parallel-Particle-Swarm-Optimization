@@ -33,6 +33,7 @@ def _calculate_score(particle):
 def _update_particle_position(particle, swarm_best_pos):
     # move particles currPos
     # https://gyazo.com/b52c066fa8aa53bc68e9e161f650c289
+    """
     particle_current_position = particle["curr_pos"][0]
     particle_best_position = particle["best_pos"][0]
 
@@ -50,6 +51,25 @@ def _update_particle_position(particle, swarm_best_pos):
     # calculate scores
 
     particle["curr_pos"] = [particle_current_position]
+    """
+
+    rand_factor = random.randint(1, 3)
+    velocity = rand_factor * particle["velocity"]
+    current_position = particle["curr_pos"][0]
+    best_position = particle["best_pos"][0]
+    global_best = swarm_best_pos[0]
+
+    movement_to_goal = velocity
+    if best_position - current_position == 0:
+        movement_to_goal += velocity
+    else:
+        movement_to_goal += velocity % (best_position - current_position)
+    if global_best - current_position == 0:
+        movement_to_goal += velocity
+    else:
+        movement_to_goal += velocity % (global_best - current_position)
+
+    particle["curr_pos"] = [particle["curr_pos"][0] + movement_to_goal]
 
     return particle
 
