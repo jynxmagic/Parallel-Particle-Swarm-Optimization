@@ -1,6 +1,3 @@
-import math
-
-
 def sphere_pp(vector):
     tot = 0
 
