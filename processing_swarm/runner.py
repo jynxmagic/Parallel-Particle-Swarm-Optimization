@@ -67,6 +67,7 @@ def _update_particle_position(particle, swarm_best_pos):
         global_best = swarm_best_pos[dimension]
 
         # vel_t defines the distance a particle will move this iteration
+        # todo
         vel_t = rand_factor1 * (
             particle["velocity"]
             + 1 * rand_factor2 * (best_position - current_position)
