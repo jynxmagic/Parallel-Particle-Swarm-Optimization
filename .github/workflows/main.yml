@@ -39,4 +39,4 @@ jobs:
           strict: high
           source: "processing_swarm"
           mypy-options: "--ignore-missing-imports --show-error-codes"
-          isort-options: "--order-by-type --length-sort"
+          isort-options: "--order-by-type --length-sort --settings-path=/github/workspace/processing_swarm/*"
