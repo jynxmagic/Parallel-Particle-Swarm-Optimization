@@ -3,6 +3,7 @@
 Utilizes Ray.io to parralelize the search process.
 """
 
+
 import random
 
 import ray  # type: ignore
@@ -16,6 +17,7 @@ ray.init()
 @ray.remote
 def _calculate_score(particle):
     curr_pos = particle["curr_pos"]
+
     score = sphere_function.sphere_pp(curr_pos)
     particle["curr_score"] = score
 
