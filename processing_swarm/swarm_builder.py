@@ -43,13 +43,11 @@ class SwarmBuilder:
     def _build_particle(cls, min_pos, max_pos):
         dimensions = 3
         r_velocity = random.randint(-1, 1)
-        while r_velocity == 0:
-            r_velocity = random.randint(-1, 1)
 
         pos = []
-        for i in range(dimensions):
-            r = random.randrange(min_pos, max_pos)
-            pos.append(r)
+        for _ in range(dimensions):
+            randcom_position = random.randrange(min_pos, max_pos)
+            pos.append(randcom_position)
         return {
             "name": "particle: " + str(random.randint(0, 99999)),
             "curr_pos": pos,
