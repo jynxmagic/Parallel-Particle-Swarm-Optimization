@@ -1,6 +1,6 @@
 """Module containing reused functions throughout the code-base."""
 
-TARGET_SCORE = 3000
+TARGET_SCORE = 0
 
 
 def current_score_is_better_than_best_score(current_score, best_score):

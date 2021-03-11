@@ -51,9 +51,11 @@ if __name__ == "__main__":
     swarm = _init_swarm()
 
     # main loop
-    for _loop in range(0, 1000):
+    RUN_COUNT = 1
+    while swarm.swarm_best_pos != helper.TARGET_SCORE:
         swarm = run(swarm)
-        print("run: " + str(_loop) + ", score: " + str(swarm.swarm_best_score))
+        print("run: " + str(RUN_COUNT) + ", score: " + str(swarm.swarm_best_score))
+        RUN_COUNT = RUN_COUNT + 1
 
-    print(swarm.swarm_best_pos[0])
+    print(swarm.swarm_best_pos)
     print(swarm.swarm_best_score)
