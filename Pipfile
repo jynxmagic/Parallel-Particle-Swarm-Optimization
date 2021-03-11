@@ -11,6 +11,7 @@ python-dev-tools = "*"
 pylint = "*"
 black = "*"
 mypy = "*"
+isort = "*"
 
 [requires]
 python_version = "3.8"
