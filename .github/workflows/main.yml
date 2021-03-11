@@ -38,3 +38,4 @@ jobs:
         with:
           strict: high
           mypy-options: "--ignore-missing-imports --show-error-codes"
+          isort-options: "--order-by-type --length-sort"
