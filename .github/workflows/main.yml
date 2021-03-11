@@ -37,6 +37,6 @@ jobs:
         uses: sunnysid3up/python-linter@master
         with:
           strict: high
-          source: "processing_swarm"
+          source: "."
           mypy-options: "--ignore-missing-imports --show-error-codes"
-          isort-options: "--order-by-type --length-sort --settings-path=/github/workspace/processing_swarm/*"
+          isort-options: "--order-by-type --length-sort"
