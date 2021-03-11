@@ -24,7 +24,9 @@ def _calculate_score(particle):
     ):
         particle["best_score"] = particle["curr_score"]
         particle["best_pos"] = particle["curr_pos"]
-        print(particle)
+        print("WOO:" + str(particle))
+
+    print(particle)
 
     return particle
 
@@ -52,24 +54,26 @@ def _update_particle_position(particle, swarm_best_pos):
 
     particle["curr_pos"] = [particle_current_position]
     """
+    r_velocity = random.randint(-1, 1)
 
-    rand_factor = random.randint(1, 3)
-    velocity = rand_factor * particle["velocity"]
-    current_position = particle["curr_pos"][0]
-    best_position = particle["best_pos"][0]
-    global_best = swarm_best_pos[0]
+    particle["velocity"] = r_velocity
 
-    movement_to_goal = velocity
-    if best_position - current_position == 0:
-        movement_to_goal += velocity
-    else:
-        movement_to_goal += velocity % (best_position - current_position)
-    if global_best - current_position == 0:
-        movement_to_goal += velocity
-    else:
-        movement_to_goal += velocity % (global_best - current_position)
+    rand_factor1 = random.randint(0, 1)
+    rand_factor2 = random.randint(0, 1)
+    rand_factor3 = random.randint(0, 1)
+    for dimension in range(0, len(particle["curr_pos"])):
+        current_position = particle["curr_pos"][dimension]
+        best_position = particle["best_pos"][dimension]
+        global_best = swarm_best_pos[dimension]
 
-    particle["curr_pos"] = [particle["curr_pos"][0] + movement_to_goal]
+        # vel_t defines the distance a particle will move this iteration
+        vel_t = rand_factor1 * (
+            particle["velocity"]
+            + 1 * rand_factor2 * (best_position - current_position)
+            + 1 * rand_factor3 * (global_best - current_position)
+        )
+
+        particle["curr_pos"][dimension] += vel_t
 
     return particle
 
