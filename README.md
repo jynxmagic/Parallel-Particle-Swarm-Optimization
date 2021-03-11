@@ -1,7 +1,10 @@
-#Install:
-$pipenv install --pre
-$pipenv shell
-$pipenv run python processing_swarm/processing_swarm.py
+# Install:
+
+```$ pipenv install --pre```
+
+```$ pipenv shell```
+
+```$ pipenv run python processing_swarm/processing_swarm.py```
 
 # Parallel-Particle-Swarm-Optimization
 
