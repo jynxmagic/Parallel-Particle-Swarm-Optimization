@@ -54,14 +54,15 @@ def _update_particle_position(particle, swarm_best_pos):
 
     particle["curr_pos"] = [particle_current_position]
     """
-    r_velocity = random.randint(-1, 1)
 
-    particle["velocity"] = r_velocity
-
-    rand_factor1 = random.randint(0, 1)
-    rand_factor2 = random.randint(0, 1)
-    rand_factor3 = random.randint(0, 1)
     for dimension in range(0, len(particle["curr_pos"])):
+        r_velocity = random.randint(-1, 1)
+
+        particle["velocity"] = r_velocity
+
+        rand_factor1 = random.randint(0, 1)
+        rand_factor2 = random.randint(0, 1)
+        rand_factor3 = random.randint(0, 1)
         current_position = particle["curr_pos"][dimension]
         best_position = particle["best_pos"][dimension]
         global_best = swarm_best_pos[dimension]
