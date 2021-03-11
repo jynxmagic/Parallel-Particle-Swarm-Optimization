@@ -2,6 +2,7 @@
 
 
 class Swarm:
+    # todo
     """Swarm containing all active particles."""
 
     def __init__(self, particles, swarm_best_pos, swarm_best_score):
