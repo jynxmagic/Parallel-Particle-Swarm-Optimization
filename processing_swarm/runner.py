@@ -38,6 +38,7 @@ def _update_particle_position(particle, swarm_best_pos):
         particle["velocity"] = r_velocity
 
         # todo rand1 should be value of social weight between 0,1
+        # todo
         rand_factor1 = random.randint(0, 1)
         rand_factor2 = random.randint(0, 1)
         rand_factor3 = random.randint(0, 1)
