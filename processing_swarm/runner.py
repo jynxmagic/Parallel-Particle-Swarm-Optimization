@@ -9,7 +9,7 @@ import ray  # type: ignore
 import helper
 import sphere_function
 
-ray.init()
+ray.init(num_cpus=4)
 
 
 @ray.remote

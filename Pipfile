@@ -1,5 +1,5 @@
 [[source]]
-url = "https://pypi.python.org/simple"
+url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
@@ -7,14 +7,6 @@ name = "pypi"
 ray = "*"
 
 [dev-packages]
-python-dev-tools = "*"
-pylint = "*"
-black = "*"
-mypy = "*"
-isort = "*"
 
 [requires]
 python_version = "3.8"
-
-[pipenv]
-allow_prereleases = true

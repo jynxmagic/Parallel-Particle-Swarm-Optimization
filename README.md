@@ -1,10 +1,16 @@
 # Install:
 
-```$ pipenv install --pre```
+## Windows - requires docker & git bash
+```$ docker build . ```
 
-```$ pipenv shell```
+``` $ docker run `docker image ls | awk 'FNR == 2 {print($3)}'` python processing_swarm.py  ```
 
-```$ pipenv run python processing_swarm/processing_swarm.py```
+```docker run``` must be passed the auto-generated image name which was just built. ```docker image ls``` lists all images and the creation date.
+
+## Linux
+``` $ python -m pip install -r requirements.txt ```
+
+``` $ python processing_swarm/processing_swarm.py ```
 
 # Parallel-Particle-Swarm-Optimization
 
