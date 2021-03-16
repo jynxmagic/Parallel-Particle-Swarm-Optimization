@@ -56,19 +56,22 @@ def build_swarm(min_pos, max_pos):
 
 
 def _build_particle(min_pos, max_pos):
-    r_velocity = random.randint(-1, 1)
-
     pos = []
+    vel = []
     for _ in range(DIMENSIONS):
-        randcom_position = random.randrange(min_pos, max_pos)
-        pos.append(randcom_position)
+        pos_d = random.uniform(min_pos, max_pos)
+        pos.append(pos_d)
+
+        vel_d = random.uniform(-1, 1)
+        vel.append(vel_d)
+
     return {
         "name": "particle: " + str(random.randint(0, 99999)),
         "curr_pos": pos,
         "curr_score": None,
         "best_score": None,
         "best_pos": pos,
-        "velocity": r_velocity,
+        "velocity": vel,
     }
 
 

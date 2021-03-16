@@ -12,6 +12,13 @@ import sphere_function
 ray.init(num_cpus=4)
 
 
+INERTIA = 0.9
+INDIVIDUAL_WEIGHT = random.random()
+SOCIAL_WEIGHT = random.random()
+LEARNING_RATE = random.random()
+R1 = random.random()
+R2 = random.random()
+
 @ray.remote
 def _calculate_score(particle):
     curr_pos = particle["curr_pos"]
@@ -25,7 +32,7 @@ def _calculate_score(particle):
     ):
         particle["best_score"] = score
         particle["best_pos"] = curr_pos
-
+        
     return particle
 
 
@@ -33,27 +40,19 @@ def _calculate_score(particle):
 def _update_particle_position(particle, swarm_best_pos):
 
     for dimension in range(0, len(particle["curr_pos"])):
-        r_velocity = random.randint(-1, 1)
 
-        particle["velocity"] = r_velocity
-
-        # todo rand1 should be value of social weight between 0,1
-        # todo
-        rand_factor1 = random.randint(0, 1)
-        rand_factor2 = random.randint(0, 1)
-        rand_factor3 = random.randint(0, 1)
         current_position = particle["curr_pos"][dimension]
         best_position = particle["best_pos"][dimension]
         global_best = swarm_best_pos[dimension]
 
         # vel_t defines the distance a particle will move this iteration
-        vel_t = rand_factor1 * (
-            particle["velocity"]
-            + rand_factor2 * (best_position - current_position)
-            + rand_factor3 * (global_best - current_position)
-        )
+        vel_t = INERTIA * particle["velocity"][dimension] \
+            + ((INDIVIDUAL_WEIGHT * R1) * (best_position - current_position)) \
+            + ((SOCIAL_WEIGHT * R2) * (global_best - current_position))
 
+        particle["velocity"][dimension] = vel_t
         particle["curr_pos"][dimension] += vel_t
+
 
     return particle
 
@@ -87,6 +86,16 @@ def update_swarm_positions(swarm):
     Returns:
         Swarm: Swarm with updated positions.
     """
+
+    """
+    R1 and R2 are changed every iteration in some equations. see:
+    https://www.intechopen.com/books/swarm-intelligence-recent-advances-new-perspectives-and-applications/particle-swarm-optimization-a-powerful-technique-for-solving-engineering-problems
+    vs
+    https://www.hindawi.com/journals/mpe/2015/931256/#EEq4
+    R1 = random.random()
+    R2 = random.random()
+    """
+
     swarm_best_pos = swarm["swarm_best_pos"]
     ray_refs = [
         _update_particle_position.remote(particle, swarm_best_pos)
