@@ -1,3 +1,5 @@
+import numpy
+
 def sphere_pp(vector):
     tot = 0
 
@@ -5,3 +7,6 @@ def sphere_pp(vector):
         tot += value * value
 
     return tot
+
+def sphere_np(array):
+    return numpy.cumproduct(array)
