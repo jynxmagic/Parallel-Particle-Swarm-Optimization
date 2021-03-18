@@ -6,6 +6,8 @@ Utilizes Ray.io to parralelize the search process.
 import random
 
 import ray  # type: ignore
+import numpy as np
+
 import helper
 import sphere_function
 
@@ -69,7 +71,7 @@ def calculate_scores_for_swarm(swarm):
     """
     ray_refs = [_calculate_score.remote(particle) for particle in swarm[0]]
 
-    scored_particles = ray.get(ray_refs)
+    scored_particles = np.array(ray.get(ray_refs))
 
     swarm[0] = scored_particles
 

@@ -1,8 +1,7 @@
 """Program entry point."""
 
-import random
-
 import numpy as np
+from numpy.core.fromnumeric import ndim
 
 import helper
 import runner
@@ -50,8 +49,21 @@ def build_swarm():
     Returns:
         np.array: Instantiated swarm object
     """
-    base_swarm = np.zeros(3, dtype=object)
-    base_swarm[0] = np.zeros((PARTICLE_AMOUNT, 6), dtype=object)
+    base_swarm = np.empty(
+        1,
+        dtype=[
+            ("particles", np.object, (PARTICLE_AMOUNT, 6)),
+            ("swarm_best_pos", np.float, (1, DIMENSIONS)),
+            ("swarm_best_score", np.float),
+        ],
+    )
+
+    print(base_swarm)
+    exit()
+
+    base_swarm["particles"].reshape(PARTICLE_AMOUNT, 6)
+
+    base_swarm["particles"] = np.empty((PARTICLE_AMOUNT, 6), dtype=object)
 
     for i in range(PARTICLE_AMOUNT):
         particle_to_add = build_particle()
@@ -82,14 +94,20 @@ def build_particle():
 
     return np.array(
         [
-            "particle: " + str(rsg.integers(low=0, high=99999, size=1)[0]),
+            "particle: " + str(rsg.integers(low=0, high=9999, size=1)[0]),
             pos,
             None,
             None,
             pos,
             rsg.integers(low=-1, high=1, size=1)[0],
         ],
-        dtype=object,
+        dtype=[
+            ("particle_name", np.string),
+            ("curr_pos", np.object),
+            ("curr_score", np.float),
+            ("best_score", np.float),
+            ("best_pos", np.object, ("velocity", np.int16)),
+        ],
     )
 
 
@@ -97,7 +115,11 @@ def update_swarm_current_best_score(swarm_to_score):
     best_score = swarm_to_score[2]
     best_pos = swarm_to_score[1]
 
-    best_particle_current = np.max(swarm_to_score[0], axis=1)
+    print(swarm_to_score[0])
+
+    best_particle_current = np.amax(swarm_to_score[0], axis=[1, 2])
+
+    exit()
 
     if helper.current_score_is_better_than_best_score(
         best_particle_current[3],
