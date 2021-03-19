@@ -9,15 +9,13 @@ import ray  # type: ignore
 import helper
 import sphere_function
 
-ray.init(num_cpus=4)
+ray.init(num_cpus=16)
 
 
 INERTIA = 0.9
 INDIVIDUAL_WEIGHT = random.random()
 SOCIAL_WEIGHT = random.random()
 LEARNING_RATE = random.random()
-R1 = random.random()
-R2 = random.random()
 
 
 @ray.remote
@@ -38,7 +36,7 @@ def _calculate_score(particle):
 
 
 @ray.remote
-def _update_particle_position(particle, swarm_best_pos):
+def _update_particle_position(particle, swarm_best_pos, r_1, r_2):
 
     for dimension in range(0, len(particle["curr_pos"])):
 
@@ -49,8 +47,8 @@ def _update_particle_position(particle, swarm_best_pos):
         # vel_t defines the distance a particle will move this iteration
         vel_t = (
             INERTIA * particle["velocity"][dimension]
-            + ((INDIVIDUAL_WEIGHT * R1) * (best_position - current_position))
-            + ((SOCIAL_WEIGHT * R2) * (global_best - current_position))
+            + ((INDIVIDUAL_WEIGHT * r_1) * (best_position - current_position))
+            + ((SOCIAL_WEIGHT * r_2) * (global_best - current_position))
         )
 
         particle["velocity"][dimension] = vel_t
@@ -88,10 +86,12 @@ def update_swarm_positions(swarm):
     Returns:
         Swarm: Swarm with updated positions.
     """
+    r_1 = random.random()
+    r_2 = random.random()
 
     swarm_best_pos = swarm["swarm_best_pos"]
     ray_refs = [
-        _update_particle_position.remote(particle, swarm_best_pos)
+        _update_particle_position.remote(particle, swarm_best_pos, r_1, r_2)
         for particle in swarm["particles"]
     ]
 
