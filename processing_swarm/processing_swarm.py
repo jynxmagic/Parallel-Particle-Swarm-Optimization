@@ -13,18 +13,18 @@ DIMENSIONS = 3
 PARTICLE_DT = np.dtype(
     [
         ("particle_name", np.unicode_, 14),  # 14 char string
-        ("curr_pos", float, DIMENSIONS),
-        ("curr_score", float),
-        ("best_score", float),
-        ("best_pos", float, DIMENSIONS),
-        ("velocity", np.int16),
+        ("curr_pos", np.float32, DIMENSIONS),
+        ("curr_score", np.float32),
+        ("best_score", np.float32),
+        ("best_pos", np.float32, DIMENSIONS),
+        ("velocity", np.float32, DIMENSIONS),
     ]
 )
 SWARM_DT = np.dtype(
     [
         ("particles", PARTICLE_DT, PARTICLE_AMOUNT),  # shape is param 3
-        ("swarm_best_pos", float, DIMENSIONS),
-        ("swarm_best_score", float),
+        ("swarm_best_pos", np.float32, DIMENSIONS),
+        ("swarm_best_score", np.float32),
     ]
 )
 
@@ -97,11 +97,15 @@ def build_particles():
     particles = np.empty(10, dtype=PARTICLE_DT)
 
     particles["particle_name"] = rsg.integers(low=0, high=9999, size=PARTICLE_AMOUNT)
-    particles["curr_pos"] = rsg.random(size=(PARTICLE_AMOUNT, 3), dtype=float) * 1000
+    particles["curr_pos"] = (
+        rsg.random(size=(PARTICLE_AMOUNT, DIMENSIONS), dtype=np.float32) * 1000
+    )
     particles["curr_score"] = None
     particles["best_score"] = np.inf
     particles["best_pos"] = particles["curr_pos"]
-    particles["velocity"] = rsg.integers(size=PARTICLE_AMOUNT, low=-1, high=1)
+    particles["velocity"] = rsg.integers(
+        size=(PARTICLE_AMOUNT, DIMENSIONS), low=-1, high=1
+    )
 
     return particles
 
@@ -135,6 +139,8 @@ if __name__ == "__main__":
     # main loop
     RUN_COUNT = 1
     while swarm["swarm_best_score"] != helper.TARGET_SCORE:
+        # while swarm["swarm_best_score"] != helper.TARGET_SCORE:
         swarm = run(swarm)
-        print("run: " + str(RUN_COUNT) + ", score: " + str(swarm[2]))
+        print(swarm["particles"])
+        print("run: " + str(RUN_COUNT) + ", score: " + str(swarm["swarm_best_score"]))
         RUN_COUNT = RUN_COUNT + 1
