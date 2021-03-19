@@ -89,15 +89,6 @@ def update_swarm_positions(swarm):
         Swarm: Swarm with updated positions.
     """
 
-    """
-    R1 and R2 are changed every iteration in some equations. see:
-    https://www.intechopen.com/books/swarm-intelligence-recent-advances-new-perspectives-and-applications/particle-swarm-optimization-a-powerful-technique-for-solving-engineering-problems
-    vs
-    https://www.hindawi.com/journals/mpe/2015/931256/#EEq4
-    R1 = random.random()
-    R2 = random.random()
-    """
-
     swarm_best_pos = swarm["swarm_best_pos"]
     ray_refs = [
         _update_particle_position.remote(particle, swarm_best_pos)
