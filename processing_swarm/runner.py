@@ -14,6 +14,14 @@ import sphere_function
 ray.init(num_cpus=8)
 
 
+INERTIA = 0.9
+INDIVIDUAL_WEIGHT = random.random()
+SOCIAL_WEIGHT = random.random()
+LEARNING_RATE = random.random()
+R1 = random.random()
+R2 = random.random()
+
+
 @ray.remote
 def _calculate_score(swarm_mem_ref, particle_no):
 
@@ -44,23 +52,19 @@ def _update_particle_position(swarm_mem_ref, particle_no):
     return x
 
     for dimension in range(0, len(particle["curr_pos"])):
-        r_velocity = random.randint(-1, 1)
-
-        particle[5] = r_velocity
-
-        # todo rand1 should be value of social weight between 0,1
 
         current_position = particle["curr_pos"][dimension]
         best_position = particle["best_pos"][dimension]
         global_best = swarm_mem_ref["swarm_best_pos"][dimension]
 
         # vel_t defines the distance a particle will move this iteration
-        vel_t = rand_factor1 * (
-            particle["velocity"]
-            + rand_factor2 * (best_position - current_position)
-            + rand_factor3 * (global_best - current_position)
+        vel_t = (
+            INERTIA * particle["velocity"][dimension]
+            + ((INDIVIDUAL_WEIGHT * R1) * (best_position - current_position))
+            + ((SOCIAL_WEIGHT * R2) * (global_best - current_position))
         )
 
+        particle["velocity"][dimension] = vel_t
         particle["curr_pos"][dimension] += vel_t
 
     return particle
