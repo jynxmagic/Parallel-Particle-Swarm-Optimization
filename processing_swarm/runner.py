@@ -19,6 +19,7 @@ LEARNING_RATE = random.random()
 R1 = random.random()
 R2 = random.random()
 
+
 @ray.remote
 def _calculate_score(particle):
     curr_pos = particle["curr_pos"]
@@ -32,7 +33,7 @@ def _calculate_score(particle):
     ):
         particle["best_score"] = score
         particle["best_pos"] = curr_pos
-        
+
     return particle
 
 
@@ -46,13 +47,14 @@ def _update_particle_position(particle, swarm_best_pos):
         global_best = swarm_best_pos[dimension]
 
         # vel_t defines the distance a particle will move this iteration
-        vel_t = INERTIA * particle["velocity"][dimension] \
-            + ((INDIVIDUAL_WEIGHT * R1) * (best_position - current_position)) \
+        vel_t = (
+            INERTIA * particle["velocity"][dimension]
+            + ((INDIVIDUAL_WEIGHT * R1) * (best_position - current_position))
             + ((SOCIAL_WEIGHT * R2) * (global_best - current_position))
+        )
 
         particle["velocity"][dimension] = vel_t
         particle["curr_pos"][dimension] += vel_t
-
 
     return particle
 
