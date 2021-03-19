@@ -110,27 +110,21 @@ def update_swarm_current_best_score(swarm_to_score):
     best_score = swarm_to_score["swarm_best_score"]
     best_pos = swarm_to_score["swarm_best_pos"]
 
-    print(swarm_to_score["particles"][0])
-
-    print(
-        swarm_to_score["particles"][0][
-            np.abs(
-                swarm_to_score["particles"]["best_score"] - helper.TARGET_SCORE
-            ).argmin()
-        ]
-    )
-
-    exit()
+    curr_best_score = swarm_to_score["particles"][0][
+        np.abs(
+            swarm_to_score["particles"]["best_score"] - helper.TARGET_SCORE,
+        ).argmin()
+    ]
 
     if helper.current_score_is_better_than_best_score(
-        best_particle_current[3],
+        curr_best_score["best_score"],
         best_score,
     ):
-        best_score = best_particle_current[3]
-        best_pos = best_particle_current[4]
+        best_score = curr_best_score["best_score"]
+        best_pos = curr_best_score["best_pos"]
 
-    swarm_to_score[2] = best_score
-    swarm_to_score[1] = best_pos
+    swarm_to_score["swarm_best_score"] = best_score
+    swarm_to_score["swarm_best_pos"] = best_pos
 
     return swarm_to_score
 
@@ -140,7 +134,7 @@ if __name__ == "__main__":
 
     # main loop
     RUN_COUNT = 1
-    while swarm[2] != helper.TARGET_SCORE:
+    while swarm["swarm_best_score"] != helper.TARGET_SCORE:
         swarm = run(swarm)
         print("run: " + str(RUN_COUNT) + ", score: " + str(swarm[2]))
         RUN_COUNT = RUN_COUNT + 1

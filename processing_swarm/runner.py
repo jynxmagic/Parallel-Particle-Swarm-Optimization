@@ -25,24 +25,38 @@ def _calculate_score(swarm_mem_ref, particle_no):
 
 
 @ray.remote
-def _update_particle_position(particle, swarm_best_pos):
+def _update_particle_position(swarm_mem_ref, particle_no):
+    particle = swarm_mem_ref["particles"][0][particle_no]
+    print(particle)
 
-    for dimension in range(0, len(particle[1])):
+    rand_factor1 = random.randint(0, 1)
+    rand_factor2 = random.randint(0, 1)
+    rand_factor3 = random.randint(0, 1)
+
+    x = rand_factor1 * (
+        particle["velocity"]
+        + rand_factor2 * (particle["best_pos"] - particle["curr_pos"])
+        + rand_factor3 * (swarm_mem_ref["swarm_best_pos"] - particle["curr_pos"])
+    )
+
+    print(x)
+
+    return x
+
+    for dimension in range(0, len(particle["curr_pos"])):
         r_velocity = random.randint(-1, 1)
 
         particle[5] = r_velocity
 
         # todo rand1 should be value of social weight between 0,1
-        rand_factor1 = random.randint(0, 1)
-        rand_factor2 = random.randint(0, 1)
-        rand_factor3 = random.randint(0, 1)
-        current_position = particle[1][dimension]
-        best_position = particle[4][dimension]
-        global_best = swarm_best_pos[dimension]
+
+        current_position = particle["curr_pos"][dimension]
+        best_position = particle["best_pos"][dimension]
+        global_best = swarm_mem_ref["swarm_best_pos"][dimension]
 
         # vel_t defines the distance a particle will move this iteration
         vel_t = rand_factor1 * (
-            particle[5]
+            particle["velocity"]
             + rand_factor2 * (best_position - current_position)
             + rand_factor3 * (global_best - current_position)
         )
@@ -63,7 +77,7 @@ def calculate_scores_for_swarm(swarm):
     """
 
     # update current scores
-    swarm_mem_ref = ray.put(swarm)
+    swarm_mem_ref = ray.put(swarm)  # read-only
     scores_ref = [
         _calculate_score.remote(swarm_mem_ref, i - 1)
         for i in range(
@@ -99,13 +113,19 @@ def update_swarm_positions(swarm):
     Returns:
         Swarm: Swarm with updated positions.
     """
-    swarm_best_pos = swarm[1]
+
+    swarm_mem_ref = ray.put(swarm)  # read-only
     ray_refs = [
-        _update_particle_position.remote(particle, swarm_best_pos)
-        for particle in swarm[0]
+        _update_particle_position.remote(
+            swarm_mem_ref,
+            i - 1,
+        )
+        for i in range(len(swarm["particles"][0]))
     ]
 
     updated_swarm_positions = ray.get(ray_refs)
+
+    exit()
 
     swarm[0] = updated_swarm_positions
 

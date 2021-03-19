@@ -30,8 +30,8 @@ def _current_less_than_best_and_target_lower(
     particles_curr_score,
     particles_best_score,
 ):
-    a = particles_curr_score[0] < particles_best_score[0]
-    b = particles_curr_score[0] >= TARGET_SCORE
+    a = particles_curr_score < particles_best_score
+    b = particles_curr_score >= TARGET_SCORE
     return np.logical_and(a, b)
 
 
@@ -39,6 +39,6 @@ def _current_more_than_best_and_target_higher(
     particles_curr_score,
     particles_best_score,
 ):
-    a = particles_curr_score[0] > particles_best_score[0]
-    b = particles_curr_score[0] <= TARGET_SCORE
+    a = particles_curr_score > particles_best_score
+    b = particles_curr_score <= TARGET_SCORE
     return np.logical_and(a, b)
