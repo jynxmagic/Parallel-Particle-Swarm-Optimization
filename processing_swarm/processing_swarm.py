@@ -75,7 +75,7 @@ def build_swarm():
 
     # set best score to first particles' position
     base_swarm["swarm_best_pos"] = base_swarm["particles"][0]["curr_pos"][0]
-    base_swarm["swarm_best_score"] = base_swarm["particles"][0]["curr_score"][0]
+    base_swarm["swarm_best_score"] = np.inf
 
     return base_swarm
 
@@ -99,7 +99,7 @@ def build_particles():
     particles["particle_name"] = rsg.integers(low=0, high=9999, size=PARTICLE_AMOUNT)
     particles["curr_pos"] = rsg.random(size=(PARTICLE_AMOUNT, 3), dtype=float) * 1000
     particles["curr_score"] = None
-    particles["best_score"] = None
+    particles["best_score"] = np.inf
     particles["best_pos"] = particles["curr_pos"]
     particles["velocity"] = rsg.integers(size=PARTICLE_AMOUNT, low=-1, high=1)
 
@@ -107,12 +107,18 @@ def build_particles():
 
 
 def update_swarm_current_best_score(swarm_to_score):
-    best_score = swarm_to_score[2]
-    best_pos = swarm_to_score[1]
+    best_score = swarm_to_score["swarm_best_score"]
+    best_pos = swarm_to_score["swarm_best_pos"]
 
-    print(swarm_to_score[0])
+    print(swarm_to_score["particles"][0])
 
-    best_particle_current = np.amax(swarm_to_score[0], axis=[1, 2])
+    print(
+        swarm_to_score["particles"][0][
+            np.abs(
+                swarm_to_score["particles"]["best_score"] - helper.TARGET_SCORE
+            ).argmin()
+        ]
+    )
 
     exit()
 

@@ -11,27 +11,17 @@ import numpy as np
 import helper
 import sphere_function
 
-ray.init(num_cpus=4)
+ray.init(num_cpus=8)
 
 
 @ray.remote
-def _calculate_score(particle):
-    scored_particle = particle
-    print(scored_particle.shape)
-    curr_pos = particle["curr_pos"]
+def _calculate_score(swarm_mem_ref, particle_no):
 
-    score = sphere_function.sphere_np(curr_pos)
+    particle = swarm_mem_ref["particles"][0][particle_no]
 
-    scored_particle["curr_score"] = score
+    score = sphere_function.sphere_np(particle["curr_pos"])
 
-    if helper.current_score_is_better_than_best_score(
-        score,
-        particle["best_score"],
-    ):
-        scored_particle["best_score"] = score
-        scored_particle["best_pos"] = curr_pos
-
-    return scored_particle
+    return score
 
 
 @ray.remote
@@ -71,11 +61,29 @@ def calculate_scores_for_swarm(swarm):
     Returns:
         Swarm: Swarm with calculated positions
     """
-    ray_refs = _calculate_score.remote(swarm["particles"])
 
-    scored_particles = np.array(ray.get(ray_refs))
+    # update current scores
+    swarm_mem_ref = ray.put(swarm)
+    scores_ref = [
+        _calculate_score.remote(swarm_mem_ref, i - 1)
+        for i in range(
+            len(swarm["particles"][0])
+        )  # spawn threads equal to particle amount
+    ]
 
-    swarm[0] = scored_particles
+    scores = np.array(ray.get(scores_ref), dtype=float)
+
+    swarm["particles"]["curr_score"] = scores
+
+    # update best scores
+    better_scores = helper.current_score_is_better_than_best_score(
+        swarm["particles"]["curr_score"], swarm["particles"]["best_score"]
+    )
+    swarm["particles"][0]["best_score"] = np.where(
+        better_scores,
+        swarm["particles"][0]["curr_score"],
+        swarm["particles"][0]["best_score"],
+    )
 
     return swarm
 

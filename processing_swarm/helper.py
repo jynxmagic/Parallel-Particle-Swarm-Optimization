@@ -1,37 +1,44 @@
 """Module containing reused functions throughout the code-base."""
 
+import numpy as np
+
 TARGET_SCORE = 0
 
 
-def current_score_is_better_than_best_score(current_score, best_score):
+def current_score_is_better_than_best_score(particles_curr_score, particles_best_score):
     """Determine if the current score is closer than the best score.
 
     Args:
-        current_score (int): Score of the particles current position.
-        best_score (int): Score of the particles best position.
-
+        current_score (np.array): particles currrent scores
+        best_score (int): particles best scores
     Returns:
-        bool: True if current score is closer to the target score.
+        np.array(bool)*particle_amount: True if current score is closer to the target score.
     """
-    if best_score is None:
-        return True
+    cl_tl = _current_less_than_best_and_target_lower(
+        particles_curr_score,
+        particles_best_score,
+    )
+    cm_th = _current_more_than_best_and_target_higher(
+        particles_curr_score,
+        particles_best_score,
+    )
 
-    if _current_less_than_best_and_target_lower(current_score, best_score):
-        return True
-
-    if _current_more_than_best_and_target_higher(current_score, best_score):
-        return True
-
-    return False
-
-
-def _current_less_than_best_and_target_lower(current_score, best_score):
-    if TARGET_SCORE <= current_score < best_score:
-        return True
-    return False
+    return np.logical_or(cl_tl, cm_th)
 
 
-def _current_more_than_best_and_target_higher(current_score, best_score):
-    if best_score < current_score <= TARGET_SCORE:
-        return True
-    return False
+def _current_less_than_best_and_target_lower(
+    particles_curr_score,
+    particles_best_score,
+):
+    a = particles_curr_score[0] < particles_best_score[0]
+    b = particles_curr_score[0] >= TARGET_SCORE
+    return np.logical_and(a, b)
+
+
+def _current_more_than_best_and_target_higher(
+    particles_curr_score,
+    particles_best_score,
+):
+    a = particles_curr_score[0] > particles_best_score[0]
+    b = particles_curr_score[0] <= TARGET_SCORE
+    return np.logical_and(a, b)
