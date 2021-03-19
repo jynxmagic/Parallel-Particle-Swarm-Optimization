@@ -10,21 +10,21 @@ DIMENSIONS = 3
 
 
 # data types
-SWARM_DT = np.dtype(
-    [
-        ("particles", np.object, PARTICLE_AMOUNT),  # shape is param 3
-        ("swarm_best_pos", np.float, DIMENSIONS),
-        ("swarm_best_score", np.float),
-    ]
-)
 PARTICLE_DT = np.dtype(
     [
         ("particle_name", np.unicode_, 14),  # 14 char string
-        ("curr_pos", np.float, 3),
-        ("curr_score", np.float),
-        ("best_score", np.float),
-        ("best_pos", np.float, 3),
+        ("curr_pos", float, DIMENSIONS),
+        ("curr_score", float),
+        ("best_score", float),
+        ("best_pos", float, DIMENSIONS),
         ("velocity", np.int16),
+    ]
+)
+SWARM_DT = np.dtype(
+    [
+        ("particles", PARTICLE_DT, PARTICLE_AMOUNT),  # shape is param 3
+        ("swarm_best_pos", float, DIMENSIONS),
+        ("swarm_best_score", float),
     ]
 )
 
@@ -69,28 +69,18 @@ def build_swarm():
         np.array: Instantiated swarm object
     """
 
-    base_swarm = np.empty(
-        1,
-        dtype=SWARM_DT,
-    )
+    base_swarm = np.ones(1, dtype=SWARM_DT)
 
-    base_swarm["particles"] = build_particle()
-
-    print(base_swarm["particles"])
-    exit()
-
-    for i in range(PARTICLE_AMOUNT):
-        particle_to_add = build_particle()
-        base_swarm[0][i - 1] = particle_to_add
+    base_swarm["particles"] = build_particles()
 
     # set best score to first particles' position
-    base_swarm[1] = base_swarm[0][0][1]
-    base_swarm[2] = base_swarm[0][0][2]
+    base_swarm["swarm_best_pos"] = base_swarm["particles"][0]["curr_pos"][0]
+    base_swarm["swarm_best_score"] = base_swarm["particles"][0]["curr_score"][0]
 
     return base_swarm
 
 
-def build_particle():
+def build_particles():
     """Builds and returns a particle object.
 
         x[0] = particle name \n
@@ -103,27 +93,17 @@ def build_particle():
     Returns:
         np.array: particle as array
     """
-    pos = np.array(3, dtype=float)
-    pos = rsg.integers(low=1, high=DIMENSIONS)  # np array
 
-    print(pos)
+    particles = np.empty(10, dtype=PARTICLE_DT)
 
-    arr = np.empty(
-        1,
-        dtype=PARTICLE_DT,
-    )
+    particles["particle_name"] = rsg.integers(low=0, high=9999, size=PARTICLE_AMOUNT)
+    particles["curr_pos"] = rsg.random(size=(PARTICLE_AMOUNT, 3), dtype=float) * 1000
+    particles["curr_score"] = None
+    particles["best_score"] = None
+    particles["best_pos"] = particles["curr_pos"]
+    particles["velocity"] = rsg.integers(size=PARTICLE_AMOUNT, low=-1, high=1)
 
-    particle_no = str(rsg.integers(low=0, high=9999, size=1)[0])
-    as_str = "particle: " + particle_no
-
-    arr["particle_name"] = as_str
-    arr["curr_pos"] = pos
-    arr["curr_score"] = None
-    arr["best_score"] = None
-    arr["best_pos"] = pos
-    arr["velocity"] = rsg.integers(low=-1, high=1, size=1)[0]
-
-    return arr
+    return particles
 
 
 def update_swarm_current_best_score(swarm_to_score):

@@ -16,20 +16,22 @@ ray.init(num_cpus=4)
 
 @ray.remote
 def _calculate_score(particle):
-    curr_pos = particle[1]
+    scored_particle = particle
+    print(scored_particle.shape)
+    curr_pos = particle["curr_pos"]
 
     score = sphere_function.sphere_np(curr_pos)
 
-    particle[2] = score
+    scored_particle["curr_score"] = score
 
     if helper.current_score_is_better_than_best_score(
         score,
-        particle[3],
+        particle["best_score"],
     ):
-        particle[3] = score
-        particle[4] = curr_pos
+        scored_particle["best_score"] = score
+        scored_particle["best_pos"] = curr_pos
 
-    return particle
+    return scored_particle
 
 
 @ray.remote
@@ -69,7 +71,7 @@ def calculate_scores_for_swarm(swarm):
     Returns:
         Swarm: Swarm with calculated positions
     """
-    ray_refs = [_calculate_score.remote(particle) for particle in swarm[0]]
+    ray_refs = _calculate_score.remote(swarm["particles"])
 
     scored_particles = np.array(ray.get(ray_refs))
 
