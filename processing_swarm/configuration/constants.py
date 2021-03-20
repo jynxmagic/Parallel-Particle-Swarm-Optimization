@@ -1,5 +1,4 @@
-"""Configuration values can be changed in this module.
-"""
+"""Configuration values can be changed in this module."""
 import numpy as np
 
 TARGET_SCORE = 10000
