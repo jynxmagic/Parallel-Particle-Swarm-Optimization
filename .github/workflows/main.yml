@@ -39,4 +39,4 @@ jobs:
           strict: high
           source: "./processing_swarm/"
           mypy-options: "--ignore-missing-imports --show-error-codes"
-          isort-options: "--multi_line=3 --trailing_comma=True --force_grid_wrap=0 --use_parentheses=True --ensure_newline_before_comments=True --line_length=88"
+          isort-options: "--profile black"
