@@ -38,5 +38,6 @@ jobs:
         with:
           strict: high
           source: "./processing_swarm/"
+          pylint-options: "--disable C0330,C0326,import-error,missing-module-docstring,missing-function-docstring,too-few-public-methods,fixme"
           mypy-options: "--ignore-missing-imports --show-error-codes"
-          isort-options: "--version"
+          isort-options: "--profile black"

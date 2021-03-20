@@ -7,20 +7,27 @@ import random
 
 import ray  # type: ignore
 
-import helper
-import sphere_function
+from processing_swarm.configuration.constants import (
+    DIMENSIONS,
+    INDIVIDUAL_WEIGHT,
+    INERTIA,
+    NUM_CPUS,
+    SOCIAL_WEIGHT,
+)
+from processing_swarm.helper.helper import current_score_is_better_than_best_score
+from processing_swarm.test_cost_functions.sphere_function import sphere_pp
 
-ray.init(num_cpus=helper.NUM_CPUS)
+ray.init(num_cpus=NUM_CPUS)
 
 
 @ray.remote
 def _calculate_score(particle):
     curr_pos = particle["curr_pos"]
 
-    score = sphere_function.sphere_pp(curr_pos)
+    score = sphere_pp(curr_pos)
     particle["curr_score"] = score
 
-    if helper.current_score_is_better_than_best_score(
+    if current_score_is_better_than_best_score(
         score,
         particle["best_score"],
     ):
@@ -33,16 +40,16 @@ def _calculate_score(particle):
 @ray.remote
 def _update_particle_position(particle, swarm_best_pos, r_1, r_2):
 
-    for dimension in range(helper.DIMENSIONS):
+    for dimension in range(DIMENSIONS):
         current_position = particle["curr_pos"][dimension]
         best_position = particle["best_pos"][dimension]
         global_best = swarm_best_pos[dimension]
 
         # vel_t defines the distance a particle will move this iteration
         vel_t = (
-            helper.INERTIA * particle["velocity"][dimension]
-            + ((helper.INDIVIDUAL_WEIGHT * r_1) * (best_position - current_position))
-            + ((helper.SOCIAL_WEIGHT * r_2) * (global_best - current_position))
+            INERTIA * particle["velocity"][dimension]
+            + ((INDIVIDUAL_WEIGHT * r_1) * (best_position - current_position))
+            + ((SOCIAL_WEIGHT * r_2) * (global_best - current_position))
         )
 
         particle["velocity"][dimension] = vel_t
