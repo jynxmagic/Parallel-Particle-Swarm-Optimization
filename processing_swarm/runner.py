@@ -6,10 +6,11 @@ Utilizes Ray.io to parralelize the search process.
 import random
 
 import ray  # type: ignore
+
 import helper
 import sphere_function
 
-ray.init(num_cpus=4)
+ray.init(num_cpus=helper.NUM_CPUS)
 
 
 @ray.remote
@@ -30,28 +31,21 @@ def _calculate_score(particle):
 
 
 @ray.remote
-def _update_particle_position(particle, swarm_best_pos):
+def _update_particle_position(particle, swarm_best_pos, r_1, r_2):
 
-    for dimension in range(0, len(particle["curr_pos"])):
-        r_velocity = random.randint(-1, 1)
-
-        particle["velocity"] = r_velocity
-
-        # todo rand1 should be value of social weight between 0,1
-        rand_factor1 = random.randint(0, 1)
-        rand_factor2 = random.randint(0, 1)
-        rand_factor3 = random.randint(0, 1)
+    for dimension in range(helper.DIMENSIONS):
         current_position = particle["curr_pos"][dimension]
         best_position = particle["best_pos"][dimension]
         global_best = swarm_best_pos[dimension]
 
         # vel_t defines the distance a particle will move this iteration
-        vel_t = rand_factor1 * (
-            particle["velocity"]
-            + rand_factor2 * (best_position - current_position)
-            + rand_factor3 * (global_best - current_position)
+        vel_t = (
+            helper.INERTIA * particle["velocity"][dimension]
+            + ((helper.INDIVIDUAL_WEIGHT * r_1) * (best_position - current_position))
+            + ((helper.SOCIAL_WEIGHT * r_2) * (global_best - current_position))
         )
 
+        particle["velocity"][dimension] = vel_t
         particle["curr_pos"][dimension] += vel_t
 
     return particle
@@ -86,9 +80,12 @@ def update_swarm_positions(swarm):
     Returns:
         Swarm: Swarm with updated positions.
     """
+    r_1 = random.random()
+    r_2 = random.random()
+
     swarm_best_pos = swarm["swarm_best_pos"]
     ray_refs = [
-        _update_particle_position.remote(particle, swarm_best_pos)
+        _update_particle_position.remote(particle, swarm_best_pos, r_1, r_2)
         for particle in swarm["particles"]
     ]
 

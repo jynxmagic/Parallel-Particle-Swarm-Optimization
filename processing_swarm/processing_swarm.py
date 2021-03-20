@@ -5,11 +5,16 @@ import random
 import helper
 import runner
 
-PARTICLE_AMOUNT = 10
-DIMENSIONS = 3
-
 
 def run(swarm_to_run):
+    """Completes a full iteration over a particle swarm.
+
+    Args:
+        swarm_to_run (swarm): Swarm with particles initialized and scored
+
+    Returns:
+        initalized_swarm: swarm with iteration complete
+    """
     swarm_with_updated_positions = runner.update_swarm_positions(swarm_to_run)
     swarm_with_particles_scored = runner.calculate_scores_for_swarm(
         swarm_with_updated_positions,
@@ -44,7 +49,7 @@ def build_swarm(min_pos, max_pos):
     """
     base_swarm = {"particles": []}
 
-    for _ in range(PARTICLE_AMOUNT):
+    for _ in range(helper.PARTICLE_AMOUNT):
         particle_to_add = _build_particle(min_pos, max_pos)
         base_swarm["particles"].append(particle_to_add)
 
@@ -56,19 +61,25 @@ def build_swarm(min_pos, max_pos):
 
 
 def _build_particle(min_pos, max_pos):
-    r_velocity = random.randint(-1, 1)
-
     pos = []
-    for _ in range(DIMENSIONS):
-        randcom_position = random.randrange(min_pos, max_pos)
-        pos.append(randcom_position)
+    vel = []
+    for _ in range(helper.DIMENSIONS):
+        pos_d = random.uniform(min_pos, max_pos)
+        pos.append(pos_d)
+
+        vel_d = random.uniform(-1, 1)
+        vel.append(vel_d)
+
+    prefix = "particle: "
+    particle_no = str(random.randint(0, 99999))
+
     return {
-        "name": "particle: " + str(random.randint(0, 99999)),
+        "name": prefix + particle_no,
         "curr_pos": pos,
         "curr_score": None,
         "best_score": None,
         "best_pos": pos,
-        "velocity": r_velocity,
+        "velocity": vel,
     }
 
 
