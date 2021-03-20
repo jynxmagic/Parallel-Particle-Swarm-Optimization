@@ -2,9 +2,9 @@
 
 import random
 
-from processing_swarm.algorithm import runner
-from processing_swarm.configuration.constants import DIMENSIONS, PARTICLE_AMOUNT
-from processing_swarm.helper import helper
+from particle_swarm.algorithm import runner
+from particle_swarm.configuration.constants import DIMENSIONS, PARTICLE_AMOUNT
+from particle_swarm.helper import helper
 
 
 def run(swarm_to_run):

@@ -1,6 +1,6 @@
 """Program entry point."""
-from processing_swarm.algorithm.processing_swarm import init_swarm, run
-from processing_swarm.configuration.constants import (
+from particle_swarm.algorithm.particle_swarm import init_swarm, run
+from particle_swarm.configuration.constants import (
     DIMENSIONS,
     INDIVIDUAL_WEIGHT,
     LEARNING_RATE,

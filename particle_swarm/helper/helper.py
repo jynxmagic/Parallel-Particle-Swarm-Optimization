@@ -1,5 +1,5 @@
 """Module containing reused functions throughout the code-base."""
-from processing_swarm.configuration.constants import TARGET_SCORE
+from particle_swarm.configuration.constants import TARGET_SCORE
 
 
 def current_score_is_better_than_best_score(current_score, best_score):

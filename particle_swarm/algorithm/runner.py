@@ -7,15 +7,15 @@ import random
 
 import ray  # type: ignore
 
-from processing_swarm.configuration.constants import (
+from particle_swarm.configuration.constants import (
     DIMENSIONS,
     INDIVIDUAL_WEIGHT,
     INERTIA,
     NUM_CPUS,
     SOCIAL_WEIGHT,
 )
-from processing_swarm.helper.helper import current_score_is_better_than_best_score
-from processing_swarm.test_cost_functions.sphere_function import sphere_pp
+from particle_swarm.helper.helper import current_score_is_better_than_best_score
+from particle_swarm.test_cost_functions.sphere_function import sphere_pp
 
 ray.init(num_cpus=NUM_CPUS)
 

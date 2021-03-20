@@ -1,18 +1,10 @@
 # Install:
 
-## Windows - requires docker & git bash
-
-`$ docker build . `
-
-`` $ docker run `docker image ls | awk 'FNR == 2 {print($3)}'` python -m processing_swarm  ``
-
-`docker run` must be passed the auto-generated image name which was just built. `docker image ls` lists all images and the creation date.
-
-## Linux
+## Windows & Unix
 
 `$ python -m pip install -r requirements.txt`
 
-`$ python -m processing_swarm`
+`$ python -m particle_swarm`
 
 # Parallel-Particle-Swarm-Optimization
 
