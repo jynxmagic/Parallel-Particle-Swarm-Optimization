@@ -1,6 +1,15 @@
 """Module containing reused functions throughout the code-base."""
+import random
 
 TARGET_SCORE = 0
+
+NUM_CPUS = 16
+INERTIA = 0.9
+INDIVIDUAL_WEIGHT = random.random()
+SOCIAL_WEIGHT = random.random()
+LEARNING_RATE = random.random()
+PARTICLE_AMOUNT = 10
+DIMENSIONS = 3
 
 
 def current_score_is_better_than_best_score(current_score, best_score):

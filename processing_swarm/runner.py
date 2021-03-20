@@ -6,16 +6,11 @@ Utilizes Ray.io to parralelize the search process.
 import random
 
 import ray  # type: ignore
+
 import helper
 import sphere_function
 
-ray.init(num_cpus=16)
-
-
-INERTIA = 0.9
-INDIVIDUAL_WEIGHT = random.random()
-SOCIAL_WEIGHT = random.random()
-LEARNING_RATE = random.random()
+ray.init(num_cpus=helper.NUM_CPUS)
 
 
 @ray.remote
@@ -38,17 +33,16 @@ def _calculate_score(particle):
 @ray.remote
 def _update_particle_position(particle, swarm_best_pos, r_1, r_2):
 
-    for dimension in range(0, len(particle["curr_pos"])):
-
+    for dimension in range(helper.DIMENSIONS):
         current_position = particle["curr_pos"][dimension]
         best_position = particle["best_pos"][dimension]
         global_best = swarm_best_pos[dimension]
 
         # vel_t defines the distance a particle will move this iteration
         vel_t = (
-            INERTIA * particle["velocity"][dimension]
-            + ((INDIVIDUAL_WEIGHT * r_1) * (best_position - current_position))
-            + ((SOCIAL_WEIGHT * r_2) * (global_best - current_position))
+            helper.INERTIA * particle["velocity"][dimension]
+            + ((helper.INDIVIDUAL_WEIGHT * r_1) * (best_position - current_position))
+            + ((helper.SOCIAL_WEIGHT * r_2) * (global_best - current_position))
         )
 
         particle["velocity"][dimension] = vel_t
