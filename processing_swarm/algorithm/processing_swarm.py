@@ -2,8 +2,9 @@
 
 import random
 
-import helper
-import runner
+from processing_swarm.algorithm import runner
+from processing_swarm.configuration.constants import DIMENSIONS, PARTICLE_AMOUNT
+from processing_swarm.helper import helper
 
 
 def run(swarm_to_run):
@@ -24,7 +25,7 @@ def run(swarm_to_run):
     )
 
 
-def _init_swarm():  # todo configuration
+def init_swarm():
 
     initalized_swarm = build_swarm(1, 1000)
 
@@ -49,7 +50,7 @@ def build_swarm(min_pos, max_pos):
     """
     base_swarm = {"particles": []}
 
-    for _ in range(helper.PARTICLE_AMOUNT):
+    for _ in range(PARTICLE_AMOUNT):
         particle_to_add = _build_particle(min_pos, max_pos)
         base_swarm["particles"].append(particle_to_add)
 
@@ -63,7 +64,7 @@ def build_swarm(min_pos, max_pos):
 def _build_particle(min_pos, max_pos):
     pos = []
     vel = []
-    for _ in range(helper.DIMENSIONS):
+    for _ in range(DIMENSIONS):
         pos_d = random.uniform(min_pos, max_pos)
         pos.append(pos_d)
 
@@ -99,17 +100,3 @@ def update_swarm_current_best_score(swarm_to_score):
     swarm_to_score["swarm_best_pos"] = best_pos
 
     return swarm_to_score
-
-
-if __name__ == "__main__":
-    swarm = _init_swarm()
-
-    # main loop
-    RUN_COUNT = 1
-    while swarm["swarm_best_score"] != helper.TARGET_SCORE:
-        swarm = run(swarm)
-        print("run: " + str(RUN_COUNT) + ", score: " + str(swarm["swarm_best_score"]))
-        RUN_COUNT = RUN_COUNT + 1
-
-    print(swarm["swarm_best_pos"])
-    print(swarm["swarm_best_score"])

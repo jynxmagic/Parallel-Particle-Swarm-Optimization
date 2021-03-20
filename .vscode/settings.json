@@ -1,16 +1,19 @@
 {
 	"python.linting.pylintEnabled": true,
+	"python.linting.pylintUseMinimalCheckers": false,
 	"python.linting.enabled": true,
 	"python.linting.flake8Enabled": true,
 	"python.linting.flake8Path": "flake8",
-	"python.linting.flake8Args": [
-		"--max-line-length=88",
-		"--docstring-convention=google",
-		"--ignore=DAR101,RST201,RST203,RST301,Q000,WPS306" //flake8-docstrings dont support google type
-	],
 	"python.formatting.provider": "black",
 	"python.formatting.blackPath": "black",
 	"python.linting.pycodestyleEnabled": true,
 	"autoDocstring.docstringFormat": "google",
-	"autoDocstring.guessTypes": true
+	"autoDocstring.guessTypes": true,
+	"[python]": {
+		"editor.wordBasedSuggestions": true,
+		"editor.codeActionsOnSave": {
+			"source.organizeImports": true,
+			"source.fixAll": true
+		}
+	}
 }
