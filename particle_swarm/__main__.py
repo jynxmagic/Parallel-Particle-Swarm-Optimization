@@ -22,11 +22,11 @@ def main():
     start = time.time()
 
     # main loop
-    RUN_COUNT = 1
+    run_count = 1
     while swarm["swarm_best_score"] != TARGET_SCORE:
         swarm = run(swarm)
-        print("run: " + str(RUN_COUNT) + ", score: " + str(swarm["swarm_best_score"]))
-        RUN_COUNT = RUN_COUNT + 1
+        print("run: " + str(run_count) + ", score: " + str(swarm["swarm_best_score"]))
+        run_count = run_count + 1
 
     print(swarm["swarm_best_pos"])
     print(swarm["swarm_best_score"])
