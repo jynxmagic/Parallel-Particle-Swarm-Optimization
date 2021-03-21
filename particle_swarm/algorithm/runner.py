@@ -3,13 +3,10 @@
 Utilizes Ray.io to parralelize the search process.
 """
 
-import random
-
 import numpy as np
 import ray  # type: ignore
 
 from particle_swarm.configuration.constants import (
-    DIMENSIONS,
     INDIVIDUAL_WEIGHT,
     INERTIA,
     LEARNING_RATE,
@@ -46,14 +43,12 @@ def _update_particle_position(particle, swarm_best_pos, r_1, r_2):
     best_position = particle["best_pos"]
     global_best = swarm_best_pos
 
-    # vel_t defines the distance a particle will move this iteration
-    vel_t =(
+    # vel_t. defines the distance a particle will move this iteration
+    return (
         INERTIA * particle["velocity"]
         + ((INDIVIDUAL_WEIGHT * r_1) * (best_position - current_position))
         + ((SOCIAL_WEIGHT * r_2) * (global_best - current_position))
     )
-    
-    return vel_t
 
 
 def calculate_scores_for_swarm(swarm):
@@ -98,6 +93,8 @@ def update_swarm_positions(swarm):
 
     for index, particle in enumerate(swarm["particles"]):
         particle["velocity"] = velocity_tomorrow[index]
-        particle["curr_pos"] = particle["curr_pos"] + (LEARNING_RATE * particle["velocity"])
+        particle["curr_pos"] = particle["curr_pos"] + (
+            LEARNING_RATE * particle["velocity"]
+        )
 
     return swarm

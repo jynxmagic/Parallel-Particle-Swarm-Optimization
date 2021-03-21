@@ -9,5 +9,6 @@ def sphere_pp(vector):
 
     return tot
 
+
 def sphere_np(vector):
     return np.cumprod(vector)[-1]
