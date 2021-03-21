@@ -1,10 +1,12 @@
 """Program entry point."""
 
-import random
+import numpy as np
 
 from particle_swarm.algorithm import runner
 from particle_swarm.configuration.constants import DIMENSIONS, PARTICLE_AMOUNT
 from particle_swarm.helper import helper
+
+random_generator = np.random.default_rng()
 
 
 def run(swarm_to_run):
@@ -26,7 +28,6 @@ def run(swarm_to_run):
 
 
 def init_swarm():
-
     initalized_swarm = build_swarm(1, 1000)
 
     # calculate particle scores for start pos
@@ -62,17 +63,12 @@ def build_swarm(min_pos, max_pos):
 
 
 def _build_particle(min_pos, max_pos):
-    pos = []
-    vel = []
-    for _ in range(DIMENSIONS):
-        pos_d = random.uniform(min_pos, max_pos)
-        pos.append(pos_d)
 
-        vel_d = random.uniform(-1, 1)
-        vel.append(vel_d)
+    pos = random_generator.uniform(low=min_pos, high=max_pos, size=DIMENSIONS)
+    vel = random_generator.integers(low=-1, high=1, size=DIMENSIONS)
 
     prefix = "particle: "
-    particle_no = str(random.randint(0, 99999))
+    particle_no = str(random_generator.integers(low=0, high=9999))
 
     return {
         "name": prefix + particle_no,
