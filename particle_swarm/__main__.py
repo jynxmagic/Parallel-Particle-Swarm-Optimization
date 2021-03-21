@@ -1,4 +1,8 @@
 """Program entry point."""
+import time
+
+from numba import jit
+
 from particle_swarm.algorithm.particle_swarm import init_swarm, run
 from particle_swarm.configuration.constants import (
     DIMENSIONS,
@@ -10,7 +14,29 @@ from particle_swarm.configuration.constants import (
     TARGET_SCORE,
 )
 
-if __name__ == "__main__":
+
+@jit(forceobj=True)
+def main():
+    swarm = init_swarm()
+
+    start = time.time()
+
+    # main loop
+    RUN_COUNT = 1
+    while swarm["swarm_best_score"] != TARGET_SCORE:
+        swarm = run(swarm)
+        print("run: " + str(RUN_COUNT) + ", score: " + str(swarm["swarm_best_score"]))
+        RUN_COUNT = RUN_COUNT + 1
+
+    print(swarm["swarm_best_pos"])
+    print(swarm["swarm_best_score"])
+
+    end = time.time()
+
+    print("time taken: ", end - start)
+
+
+def print_config():
     print(
         "############ CONFIGURATION: ##############\n",
         "Target Score: ",
@@ -36,14 +62,8 @@ if __name__ == "__main__":
         PARTICLE_AMOUNT,
         "\n",
     )
-    swarm = init_swarm()
 
-    # main loop
-    RUN_COUNT = 1
-    while swarm["swarm_best_score"] != TARGET_SCORE:
-        swarm = run(swarm)
-        print("run: " + str(RUN_COUNT) + ", score: " + str(swarm["swarm_best_score"]))
-        RUN_COUNT = RUN_COUNT + 1
 
-    print(swarm["swarm_best_pos"])
-    print(swarm["swarm_best_score"])
+if __name__ == "__main__":
+    main()
+    print_config()
