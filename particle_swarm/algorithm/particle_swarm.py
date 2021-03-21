@@ -65,13 +65,9 @@ def build_swarm(min_pos, max_pos):
 def _build_particle(min_pos, max_pos):
 
     pos = random_generator.uniform(low=min_pos, high=max_pos, size=DIMENSIONS)
-    vel = random_generator.integers(low=-1, high=1, size=DIMENSIONS)
-
-    prefix = "particle: "
-    particle_no = str(random_generator.integers(low=0, high=9999))
+    vel = pos
 
     return {
-        "name": prefix + particle_no,
         "curr_pos": pos,
         "curr_score": None,
         "best_score": None,
