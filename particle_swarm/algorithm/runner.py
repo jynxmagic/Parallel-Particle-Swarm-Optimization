@@ -3,19 +3,18 @@
 Utilizes Ray.io to parralelize the search process.
 """
 
-import random
-
+import numpy as np
 import ray  # type: ignore
 
 from particle_swarm.configuration.constants import (
-    DIMENSIONS,
     INDIVIDUAL_WEIGHT,
     INERTIA,
+    LEARNING_RATE,
     NUM_CPUS,
     SOCIAL_WEIGHT,
 )
 from particle_swarm.helper.helper import current_score_is_better_than_best_score
-from particle_swarm.test_cost_functions.sphere_function import sphere_pp
+from particle_swarm.test_cost_functions.sphere_function import sphere_np
 
 ray.init(num_cpus=NUM_CPUS)
 
@@ -24,7 +23,7 @@ ray.init(num_cpus=NUM_CPUS)
 def _calculate_score(particle):
     curr_pos = particle["curr_pos"]
 
-    score = sphere_pp(curr_pos)
+    score = sphere_np(curr_pos)
     particle["curr_score"] = score
 
     if current_score_is_better_than_best_score(
@@ -40,22 +39,16 @@ def _calculate_score(particle):
 @ray.remote
 def _update_particle_position(particle, swarm_best_pos, r_1, r_2):
 
-    for dimension in range(DIMENSIONS):
-        current_position = particle["curr_pos"][dimension]
-        best_position = particle["best_pos"][dimension]
-        global_best = swarm_best_pos[dimension]
+    current_position = particle["curr_pos"]
+    best_position = particle["best_pos"]
+    global_best = swarm_best_pos
 
-        # vel_t defines the distance a particle will move this iteration
-        vel_t = (
-            INERTIA * particle["velocity"][dimension]
-            + ((INDIVIDUAL_WEIGHT * r_1) * (best_position - current_position))
-            + ((SOCIAL_WEIGHT * r_2) * (global_best - current_position))
-        )
-
-        particle["velocity"][dimension] = vel_t
-        particle["curr_pos"][dimension] += vel_t
-
-    return particle
+    # vel_t. defines the distance a particle will move this iteration
+    return (
+        INERTIA * particle["velocity"]
+        + ((INDIVIDUAL_WEIGHT * r_1) * (best_position - current_position))
+        + ((SOCIAL_WEIGHT * r_2) * (global_best - current_position))
+    )
 
 
 def calculate_scores_for_swarm(swarm):
@@ -87,8 +80,8 @@ def update_swarm_positions(swarm):
     Returns:
         Swarm: Swarm with updated positions.
     """
-    r_1 = random.random()
-    r_2 = random.random()
+    r_1 = np.random.default_rng().random()
+    r_2 = np.random.default_rng().random()
 
     swarm_best_pos = swarm["swarm_best_pos"]
     ray_refs = [
@@ -96,8 +89,12 @@ def update_swarm_positions(swarm):
         for particle in swarm["particles"]
     ]
 
-    updated_swarm_positions = ray.get(ray_refs)
+    velocity_tomorrow = np.copy(ray.get(ray_refs))
 
-    swarm["particles"] = updated_swarm_positions
+    for index, particle in enumerate(swarm["particles"]):
+        particle["velocity"] = velocity_tomorrow[index]
+        particle["curr_pos"] = particle["curr_pos"] + (
+            LEARNING_RATE * particle["velocity"]
+        )
 
     return swarm
