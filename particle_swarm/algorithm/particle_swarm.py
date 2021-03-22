@@ -9,6 +9,26 @@ from particle_swarm.helper import helper
 random_generator = np.random.default_rng()
 
 
+# data types
+PARTICLE_DT = np.dtype(
+    [
+        ("particle_name", np.unicode_, 14),  # 14 char string
+        ("curr_pos", np.float32, DIMENSIONS),
+        ("curr_score", np.float32),
+        ("best_score", np.float32),
+        ("best_pos", np.float32, DIMENSIONS),
+        ("velocity", np.float32, DIMENSIONS),
+    ]
+)
+SWARM_DT = np.dtype(
+    [
+        ("particles", PARTICLE_DT, PARTICLE_AMOUNT),  # shape is param 3
+        ("swarm_best_pos", np.float32, DIMENSIONS),
+        ("swarm_best_score", np.float32),
+    ]
+)
+
+
 def run(swarm_to_run):
     """Completes a full iteration over a particle swarm.
 
