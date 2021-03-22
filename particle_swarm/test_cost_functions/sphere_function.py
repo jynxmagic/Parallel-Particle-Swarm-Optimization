@@ -25,4 +25,4 @@ def sphere_np(vector):
     Returns:
         float/int: product of array
     """
-    return np.cumprod(vector, dtype=np.float32)[-1]
+    return np.prod(vector, dtype=np.float32)
