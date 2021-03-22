@@ -65,7 +65,9 @@ def build_swarm(min_pos, max_pos):
 
 def _build_particle(min_pos, max_pos):
 
-    pos = random_generator.uniform(low=min_pos, high=max_pos, size=DIMENSIONS).astype(np.float32)
+    pos = random_generator.uniform(low=min_pos, high=max_pos, size=DIMENSIONS).astype(
+        np.float32
+    )
     vel = pos
 
     return {
