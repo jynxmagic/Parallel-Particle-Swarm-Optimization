@@ -11,4 +11,4 @@ def sphere_pp(vector):
 
 
 def sphere_np(vector):
-    return np.cumprod(vector)[-1]
+    return np.cumprod(vector, dtype=np.float32)[-1]
