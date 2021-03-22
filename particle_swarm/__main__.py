@@ -3,7 +3,7 @@ import time
 
 from numba import jit
 
-from particle_swarm.algorithm.particle_swarm import init_swarm, run
+from particle_swarm.algorithm.runner import run
 from particle_swarm.configuration.constants import (
     DIMENSIONS,
     INDIVIDUAL_WEIGHT,
@@ -13,12 +13,13 @@ from particle_swarm.configuration.constants import (
     SOCIAL_WEIGHT,
     TARGET_SCORE,
 )
+from particle_swarm.data.swarm import build_swarm
 
 
 @jit(forceobj=True)
 def main():
     """Main method for the program."""
-    swarm = init_swarm()
+    swarm = build_swarm(0, 999)
 
     start = time.time()
 
@@ -26,6 +27,8 @@ def main():
     run_count = 1
     while swarm["swarm_best_score"] != TARGET_SCORE:
         swarm = run(swarm)
+        print("run: ", run_count, " ")
+        print("best score: ", swarm["swarm_best_score"])
         run_count = run_count + 1
 
     print("best position: ", swarm["swarm_best_pos"])

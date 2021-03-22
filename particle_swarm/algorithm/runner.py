@@ -11,11 +11,28 @@ from particle_swarm.configuration.constants import (
     INERTIA,
     NUM_CPUS,
     SOCIAL_WEIGHT,
+    TARGET_SCORE,
 )
+from particle_swarm.data.swarm import update_swarm_best_score
 from particle_swarm.helper.helper import current_score_is_better_than_best_score
 from particle_swarm.test_cost_functions.sphere_function import sphere_np
 
 ray.init(num_cpus=NUM_CPUS)
+
+
+def run(swarm_to_run):
+    """Completes a full iteration over a particle swarm.
+
+    Args:
+        swarm_to_run (swarm): Swarm with particles initialized and scored
+
+    Returns:
+        initalized_swarm: swarm with iteration complete
+    """
+    swarm_with_updated_positions = update_swarm_positions(swarm_to_run)
+    return calculate_scores_for_swarm(
+        swarm_with_updated_positions,
+    )
 
 
 @ray.remote
@@ -54,19 +71,9 @@ def calculate_scores_for_swarm(swarm):
 
     scores = np.array(ray.get(ray_refs), dtype=float)
 
-    particles["curr_score"] = scores
+    swarm["particles"][0]["curr_score"] = scores
 
-    # update best scores
-    for index, particle in enumerate(swarm["particles"][0]):
-        if current_score_is_better_than_best_score(
-            particle["curr_score"],
-            particle["best_score"],
-        ):
-            particle["best_pos"] = particle["curr_pos"]
-            particle["best_score"] = particle["curr_score"]
-            swarm["particles"][0][index] = particle
-
-    return swarm
+    return update_swarm_best_score(swarm)
 
 
 def update_swarm_positions(swarm):
