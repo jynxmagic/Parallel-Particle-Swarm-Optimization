@@ -9,6 +9,7 @@ import ray  # type: ignore
 from particle_swarm.configuration.constants import (
     INDIVIDUAL_WEIGHT,
     INERTIA,
+    LEARNING_RATE,
     NUM_CPUS,
     SOCIAL_WEIGHT,
 )
@@ -62,12 +63,11 @@ def calculate_scores_for_swarm(swarm):
     Returns:
         Swarm: Swarm with calculated positions
     """
-
     particles = swarm["particles"][0]
 
     ray_refs = [_calculate_score.remote(particle) for particle in particles]
 
-    scores = np.array(ray.get(ray_refs), dtype=float)
+    scores = np.array(ray.get(ray_refs))
 
     swarm["particles"][0]["curr_score"] = scores
 
@@ -97,6 +97,6 @@ def update_swarm_positions(swarm):
     velocity_tomorrow = np.copy(ray.get(ray_refs))
 
     swarm["particles"][0]["velocity"] = velocity_tomorrow
-    swarm["particles"][0]["curr_pos"] += velocity_tomorrow
+    swarm["particles"][0]["curr_pos"] += LEARNING_RATE * velocity_tomorrow
 
     return swarm

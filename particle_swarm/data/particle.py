@@ -4,7 +4,6 @@ from particle_swarm.configuration.constants import DIMENSIONS, PARTICLE_AMOUNT
 
 PARTICLE_DT = np.dtype(
     [
-        ("particle_name", np.unicode_, 14),  # 14 char string
         ("curr_pos", np.float32, DIMENSIONS),
         ("curr_score", np.float32),
         ("best_score", np.float32),

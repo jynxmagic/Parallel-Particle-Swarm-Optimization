@@ -1,10 +1,6 @@
 import numpy as np
 
-from particle_swarm.configuration.constants import (
-    DIMENSIONS,
-    PARTICLE_AMOUNT,
-    TARGET_SCORE,
-)
+from particle_swarm.configuration.constants import DIMENSIONS, PARTICLE_AMOUNT
 from particle_swarm.data.particle import PARTICLE_DT, build_particles
 from particle_swarm.helper.helper import current_score_is_better_than_best_score
 
