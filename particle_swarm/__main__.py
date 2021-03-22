@@ -17,6 +17,7 @@ from particle_swarm.configuration.constants import (
 
 @jit(forceobj=True)
 def main():
+    """Main method for the program."""
     swarm = init_swarm()
 
     start = time.time()
@@ -25,7 +26,7 @@ def main():
     run_count = 1
     while swarm["swarm_best_score"] != TARGET_SCORE:
         swarm = run(swarm)
-        print("run: " + str(run_count) + ", score: " + str(swarm["swarm_best_score"]))
+        print("run: ", run_count, ", score: ", swarm["swarm_best_score"])
         run_count = run_count + 1
 
     print(swarm["swarm_best_pos"])
@@ -37,6 +38,7 @@ def main():
 
 
 def print_config():
+    """Prints the configuration values."""
     print(
         "############ CONFIGURATION: ##############\n",
         "Target Score: ",

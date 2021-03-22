@@ -28,6 +28,16 @@ def run(swarm_to_run):
 
 
 def init_swarm():
+    """Initialize a swarm object.
+
+    Swarm object contains particles initialized and scored.
+
+    Args:
+        None
+
+    Returns:
+        dict: Initialized swarm object
+    """
     initalized_swarm = build_swarm(1, 1000)
 
     # calculate particle scores for start pos
@@ -47,7 +57,7 @@ def build_swarm(min_pos, max_pos):
         max_pos (type): Max position of vector
 
     Returns:
-        Swarm: Instantiated swarm object
+        dict: Instantiated swarm object
     """
     base_swarm = {"particles": []}
 
@@ -64,7 +74,7 @@ def build_swarm(min_pos, max_pos):
 def _build_particle(min_pos, max_pos):
 
     pos = random_generator.uniform(low=min_pos, high=max_pos, size=DIMENSIONS).astype(
-        np.float32
+        np.float32,
     )
     vel = pos
 
@@ -78,6 +88,14 @@ def _build_particle(min_pos, max_pos):
 
 
 def update_swarm_current_best_score(swarm_to_score):
+    """Update the swarms current best score.
+
+    Args:
+        swarm_to_score (dict): Swarm with particles scored.
+
+    Returns:
+        dict: Swarm with swarm_best_score and swarm_best_pos updated.
+    """
     best_score = swarm_to_score["swarm_best_score"]
     best_pos = swarm_to_score["swarm_best_pos"]
 
