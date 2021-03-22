@@ -1,6 +1,5 @@
 """Program entry point."""
 
-import numba
 import numpy as np
 
 from particle_swarm.algorithm import runner
@@ -52,9 +51,8 @@ def build_swarm(min_pos, max_pos):
     """
     base_swarm = {"particles": []}
 
-    for _ in range(PARTICLE_AMOUNT):
-        particle_to_add = _build_particle(min_pos, max_pos)
-        base_swarm["particles"].append(particle_to_add)
+    iterator = range(PARTICLE_AMOUNT)
+    base_swarm["particles"] = [_build_particle(min_pos, max_pos) for _ in iterator]
 
     # set best score to first particles' position
     base_swarm["swarm_best_pos"] = base_swarm["particles"][0]["curr_pos"]
