@@ -52,9 +52,7 @@ def build_swarm(min_pos, max_pos):
     base_swarm = {"particles": []}
 
     iterator = range(PARTICLE_AMOUNT)
-    for index in iterator:
-        particle_to_add = _build_particle(min_pos, max_pos)
-        base_swarm["particles"][index] = particle_to_add
+    base_swarm["particles"] = [_build_particle(min_pos, max_pos) for _ in iterator]
 
     # set best score to first particles' position
     base_swarm["swarm_best_pos"] = base_swarm["particles"][0]["curr_pos"]
