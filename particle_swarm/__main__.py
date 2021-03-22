@@ -1,7 +1,6 @@
 """Program entry point."""
 import time
 
-import numpy as np
 from numba import jit
 
 from particle_swarm.algorithm.runner import run
