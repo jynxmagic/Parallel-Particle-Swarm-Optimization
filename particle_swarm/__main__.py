@@ -26,11 +26,11 @@ def main():
     run_count = 1
     while swarm["swarm_best_score"] != TARGET_SCORE:
         swarm = run(swarm)
-        print("run: ", run_count, ", score: ", swarm["swarm_best_score"])
         run_count = run_count + 1
 
-    print(swarm["swarm_best_pos"])
-    print(swarm["swarm_best_score"])
+    print("best position: ", swarm["swarm_best_pos"])
+    print("score: ", swarm["swarm_best_score"])
+    print("completed in: ", run_count, " runs")
 
     end = time.time()
 

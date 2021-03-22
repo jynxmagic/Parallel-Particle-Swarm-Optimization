@@ -18,14 +18,14 @@ PARTICLE_DT = np.dtype(
         ("best_score", np.float32),
         ("best_pos", np.float32, DIMENSIONS),
         ("velocity", np.float32, DIMENSIONS),
-    ]
+    ],
 )
 SWARM_DT = np.dtype(
     [
         ("particles", PARTICLE_DT, PARTICLE_AMOUNT),  # shape is param 3
         ("swarm_best_pos", np.float32, DIMENSIONS),
         ("swarm_best_score", np.float32),
-    ]
+    ],
 )
 
 
@@ -79,32 +79,38 @@ def build_swarm(min_pos, max_pos):
     Returns:
         dict: Instantiated swarm object
     """
-    base_swarm = {"particles": []}
+    base_swarm = np.ones(1, dtype=SWARM_DT)
 
-    iterator = range(PARTICLE_AMOUNT)
-    base_swarm["particles"] = [_build_particle(min_pos, max_pos) for _ in iterator]
+    base_swarm["particles"] = _build_particles(min_pos, max_pos)
 
     # set best score to first particles' position
-    base_swarm["swarm_best_pos"] = base_swarm["particles"][0]["curr_pos"]
-    base_swarm["swarm_best_score"] = base_swarm["particles"][0]["curr_score"]
+    base_swarm["swarm_best_pos"] = base_swarm["particles"][0][0]["curr_pos"]
+    base_swarm["swarm_best_score"] = np.inf
 
     return base_swarm
 
 
-def _build_particle(min_pos, max_pos):
+def _build_particles(min_pos, max_pos):
+    """Builds and returns a particle object.
 
-    pos = random_generator.uniform(low=min_pos, high=max_pos, size=DIMENSIONS).astype(
-        np.float32,
+    Args:
+        min_pos (float): minimum position of particle search space
+        max_pos (float): max position of particle search space
+
+    Returns:
+        np.array: particle as array
+    """
+    particles = np.empty(PARTICLE_AMOUNT, dtype=PARTICLE_DT)
+
+    particles["curr_pos"] = random_generator.uniform(
+        size=(PARTICLE_AMOUNT, DIMENSIONS), low=min_pos, high=max_pos
     )
-    vel = pos
+    particles["curr_score"] = np.inf
+    particles["best_score"] = np.inf
+    particles["best_pos"] = particles["curr_pos"]
+    particles["velocity"] = particles["curr_pos"]
 
-    return {
-        "curr_pos": pos,
-        "curr_score": None,
-        "best_score": None,
-        "best_pos": pos,
-        "velocity": vel,
-    }
+    return particles
 
 
 def update_swarm_current_best_score(swarm_to_score):
@@ -119,13 +125,18 @@ def update_swarm_current_best_score(swarm_to_score):
     best_score = swarm_to_score["swarm_best_score"]
     best_pos = swarm_to_score["swarm_best_pos"]
 
-    for particle in swarm_to_score["particles"]:
-        if helper.current_score_is_better_than_best_score(
-            particle["curr_score"],
-            best_score,
-        ):
-            best_score = particle["curr_score"]
-            best_pos = particle["curr_pos"]
+    curr_best_score = swarm_to_score["particles"][0][
+        np.abs(
+            swarm_to_score["particles"]["curr_score"] - helper.TARGET_SCORE,
+        ).argmin()
+    ]
+
+    if helper.current_score_is_better_than_best_score(
+        curr_best_score["curr_score"],
+        best_score,
+    ):
+        best_score = curr_best_score["curr_score"]
+        best_pos = curr_best_score["curr_pos"]
 
     swarm_to_score["swarm_best_score"] = best_score
     swarm_to_score["swarm_best_pos"] = best_pos

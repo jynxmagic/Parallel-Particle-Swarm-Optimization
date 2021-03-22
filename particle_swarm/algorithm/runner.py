@@ -9,7 +9,6 @@ import ray  # type: ignore
 from particle_swarm.configuration.constants import (
     INDIVIDUAL_WEIGHT,
     INERTIA,
-    LEARNING_RATE,
     NUM_CPUS,
     SOCIAL_WEIGHT,
 )
@@ -21,19 +20,7 @@ ray.init(num_cpus=NUM_CPUS)
 
 @ray.remote
 def _calculate_score(particle):
-    curr_pos = particle["curr_pos"]
-
-    score = sphere_np(curr_pos)
-    particle["curr_score"] = score
-
-    if current_score_is_better_than_best_score(
-        score,
-        particle["best_score"],
-    ):
-        particle["best_score"] = score
-        particle["best_pos"] = curr_pos
-
-    return particle
+    return sphere_np(particle["curr_pos"])
 
 
 @ray.remote
@@ -48,7 +35,7 @@ def _update_particle_position(particle, swarm_best_pos, r_1, r_2):
         INERTIA * particle["velocity"]
         + ((INDIVIDUAL_WEIGHT * r_1) * (best_position - current_position))
         + ((SOCIAL_WEIGHT * r_2) * (global_best - current_position))
-    )
+    )[0]
 
 
 def calculate_scores_for_swarm(swarm):
@@ -60,11 +47,24 @@ def calculate_scores_for_swarm(swarm):
     Returns:
         Swarm: Swarm with calculated positions
     """
-    ray_refs = [_calculate_score.remote(particle) for particle in swarm["particles"]]
 
-    scored_particles = ray.get(ray_refs)
+    particles = swarm["particles"][0]
 
-    swarm["particles"] = scored_particles
+    ray_refs = [_calculate_score.remote(particle) for particle in particles]
+
+    scores = np.array(ray.get(ray_refs), dtype=float)
+
+    particles["curr_score"] = scores
+
+    # update best scores
+    for index, particle in enumerate(swarm["particles"][0]):
+        if current_score_is_better_than_best_score(
+            particle["curr_score"],
+            particle["best_score"],
+        ):
+            particle["best_pos"] = particle["curr_pos"]
+            particle["best_score"] = particle["curr_score"]
+            swarm["particles"][0][index] = particle
 
     return swarm
 
@@ -86,15 +86,12 @@ def update_swarm_positions(swarm):
     swarm_best_pos = swarm["swarm_best_pos"]
     ray_refs = [
         _update_particle_position.remote(particle, swarm_best_pos, r_1, r_2)
-        for particle in swarm["particles"]
+        for particle in swarm["particles"][0]
     ]
 
     velocity_tomorrow = np.copy(ray.get(ray_refs))
 
-    for index, particle in enumerate(swarm["particles"]):
-        particle["velocity"] = velocity_tomorrow[index]
-        particle["curr_pos"] = particle["curr_pos"] + (
-            LEARNING_RATE * particle["velocity"]
-        )
+    swarm["particles"][0]["velocity"] = velocity_tomorrow
+    swarm["particles"][0]["curr_pos"] += velocity_tomorrow
 
     return swarm
