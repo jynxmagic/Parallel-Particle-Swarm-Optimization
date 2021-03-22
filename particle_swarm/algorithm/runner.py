@@ -11,10 +11,8 @@ from particle_swarm.configuration.constants import (
     INERTIA,
     NUM_CPUS,
     SOCIAL_WEIGHT,
-    TARGET_SCORE,
 )
 from particle_swarm.data.swarm import update_swarm_best_score
-from particle_swarm.helper.helper import current_score_is_better_than_best_score
 from particle_swarm.test_cost_functions.sphere_function import sphere_np
 
 ray.init(num_cpus=NUM_CPUS)
