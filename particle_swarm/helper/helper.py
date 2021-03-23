@@ -23,4 +23,4 @@ def current_score_is_better_than_best_score(current_score, best_score):
     diff_current = np.abs(TARGET_SCORE - current_score)
     diff_best = np.abs(TARGET_SCORE - best_score)
 
-    return diff_current < diff_best
+    return diff_current <= diff_best

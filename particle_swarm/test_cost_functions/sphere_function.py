@@ -17,12 +17,13 @@ def sphere_pp(vector):
 
 
 def sphere_np(vector):
-    """Returns the product of given array.
+    """Returns the sphere function of a vector.
 
     Args:
         vector (np.array): array of floats/ints, created by numpy
 
     Returns:
-        float/int: product of array
+        float/int: sphere function of array
     """
-    return np.prod(vector, dtype=np.float32)
+
+    return np.sum(vector**2)
