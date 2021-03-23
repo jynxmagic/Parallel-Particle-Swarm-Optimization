@@ -49,8 +49,8 @@ def _update_particle_position(particle, swarm_best_pos, r_1, r_2):
     # vel_t. defines the distance a particle will move this iteration
     return (
         INERTIA * particle["velocity"]
-        + ((INDIVIDUAL_WEIGHT * r_1) * (best_position - current_position))
-        + ((SOCIAL_WEIGHT * r_2) * (global_best - current_position))
+        + INDIVIDUAL_WEIGHT * r_1 * (best_position - current_position)
+        + SOCIAL_WEIGHT * r_2 * (global_best - current_position)
     )[0]
 
 
