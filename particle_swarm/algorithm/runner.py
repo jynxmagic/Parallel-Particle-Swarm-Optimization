@@ -10,6 +10,8 @@ from particle_swarm.configuration.constants import (
     INDIVIDUAL_WEIGHT,
     INERTIA,
     LEARNING_RATE,
+    MAX_POS,
+    MIN_POS,
     NUM_CPUS,
     SOCIAL_WEIGHT,
 )
@@ -98,5 +100,8 @@ def update_swarm_positions(swarm):
 
     swarm["particles"][0]["velocity"] = velocity_tomorrow
     swarm["particles"][0]["curr_pos"] += LEARNING_RATE * velocity_tomorrow
+
+
+    swarm["particles"][0]["curr_pos"][swarm["particles"][0]["curr_pos"] < MIN_POS] = MIN_POS
 
     return swarm

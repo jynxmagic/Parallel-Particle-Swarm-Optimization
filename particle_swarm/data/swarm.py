@@ -13,7 +13,7 @@ SWARM_DT = np.dtype(
 )
 
 
-def build_swarm(min_pos, max_pos):
+def build_swarm():
     """Build and return a swarm object.
 
     Args:
@@ -25,7 +25,7 @@ def build_swarm(min_pos, max_pos):
     """
     base_swarm = np.ones(1, dtype=SWARM_DT)
 
-    base_swarm["particles"] = build_particles(min_pos, max_pos)
+    base_swarm["particles"] = build_particles()
 
     # set best score to first particles' position
     base_swarm["swarm_best_pos"] = base_swarm["particles"][0][0]["curr_pos"]

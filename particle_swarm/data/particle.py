@@ -1,6 +1,11 @@
 import numpy as np
 
-from particle_swarm.configuration.constants import DIMENSIONS, PARTICLE_AMOUNT
+from particle_swarm.configuration.constants import (
+    DIMENSIONS,
+    MAX_POS,
+    MIN_POS,
+    PARTICLE_AMOUNT,
+)
 
 PARTICLE_DT = np.dtype(
     [
@@ -13,7 +18,7 @@ PARTICLE_DT = np.dtype(
 )
 
 
-def build_particles(min_pos, max_pos):
+def build_particles():
     """Builds and returns particles.
 
     Args:
@@ -26,7 +31,9 @@ def build_particles(min_pos, max_pos):
     particles = np.empty(PARTICLE_AMOUNT, dtype=PARTICLE_DT)
 
     position = np.random.default_rng().uniform(
-        size=(PARTICLE_AMOUNT, DIMENSIONS), low=min_pos, high=max_pos
+        size=(PARTICLE_AMOUNT, DIMENSIONS), 
+        low=MIN_POS, 
+        high=MAX_POS,
     )
 
     particles["curr_pos"] = position
@@ -34,5 +41,5 @@ def build_particles(min_pos, max_pos):
     particles["best_score"] = np.inf
     particles["best_pos"] = position
     particles["velocity"] = position
-
+    
     return particles

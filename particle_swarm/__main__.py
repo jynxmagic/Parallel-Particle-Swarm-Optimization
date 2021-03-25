@@ -19,7 +19,7 @@ from particle_swarm.data.swarm import build_swarm
 @jit(forceobj=True)
 def main():
     """Main method for the program."""
-    swarm = build_swarm(0, 999)
+    swarm = build_swarm()
 
     start = time.time()
 
