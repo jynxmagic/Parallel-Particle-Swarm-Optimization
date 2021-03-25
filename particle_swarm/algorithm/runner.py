@@ -30,10 +30,10 @@ def run(swarm_to_run):
     Returns:
         initalized_swarm: swarm with iteration complete
     """
-    swarm_with_updated_positions = update_swarm_positions(swarm_to_run)
-    return calculate_scores_for_swarm(
-        swarm_with_updated_positions,
-    )
+
+    scored_swarm = calculate_scores_for_swarm(swarm_to_run)
+    swarm_with_updated_positions = update_swarm_positions(scored_swarm)
+    return swarm_with_updated_positions
 
 
 @ray.remote
@@ -102,6 +102,8 @@ def update_swarm_positions(swarm):
     swarm["particles"][0]["curr_pos"] += LEARNING_RATE * velocity_tomorrow
 
 
-    swarm["particles"][0]["curr_pos"][swarm["particles"][0]["curr_pos"] < MIN_POS] = MIN_POS
+    #update search space where particles went out of bounds
+    swarm["particles"]["curr_pos"][swarm["particles"]["curr_pos"] < MIN_POS] = MIN_POS
+    swarm["particles"]["curr_pos"][swarm["particles"]["curr_pos"] > MAX_POS] = MAX_POS
 
     return swarm
