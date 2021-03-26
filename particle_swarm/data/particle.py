@@ -31,8 +31,8 @@ def build_particles():
     particles = np.empty(PARTICLE_AMOUNT, dtype=PARTICLE_DT)
 
     position = np.random.default_rng().uniform(
-        size=(PARTICLE_AMOUNT, DIMENSIONS), 
-        low=MIN_POS, 
+        size=(PARTICLE_AMOUNT, DIMENSIONS),
+        low=MIN_POS,
         high=MAX_POS,
     )
 
@@ -41,5 +41,5 @@ def build_particles():
     particles["best_score"] = np.inf
     particles["best_pos"] = position
     particles["velocity"] = position
-    
+
     return particles

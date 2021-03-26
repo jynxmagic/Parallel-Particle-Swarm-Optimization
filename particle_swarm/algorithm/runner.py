@@ -16,7 +16,7 @@ from particle_swarm.configuration.constants import (
     SOCIAL_WEIGHT,
 )
 from particle_swarm.data.swarm import update_swarm_best_score
-from particle_swarm.test_cost_functions.sphere_function import sphere_np
+from particle_swarm.test_cost_functions.rosenbrock_function import rosenbrock
 
 ray.init(num_cpus=NUM_CPUS)
 
@@ -38,7 +38,7 @@ def run(swarm_to_run):
 
 @ray.remote
 def _calculate_score(particle):
-    return sphere_np(particle["curr_pos"])
+    return rosenbrock(particle["curr_pos"])
 
 
 @ray.remote
@@ -101,8 +101,7 @@ def update_swarm_positions(swarm):
     swarm["particles"][0]["velocity"] = velocity_tomorrow
     swarm["particles"][0]["curr_pos"] += LEARNING_RATE * velocity_tomorrow
 
-
-    #update search space where particles went out of bounds
+    # update search space where particles went out of bounds
     swarm["particles"]["curr_pos"][swarm["particles"]["curr_pos"] < MIN_POS] = MIN_POS
     swarm["particles"]["curr_pos"][swarm["particles"]["curr_pos"] > MAX_POS] = MAX_POS
 
