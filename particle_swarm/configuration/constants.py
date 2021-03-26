@@ -1,6 +1,6 @@
 """Configuration values can be changed in this module."""
 
-TARGET_SCORE = 0
+TARGET_SCORE = -1
 DIMENSIONS = 2
 NUM_CPUS = 8
 
