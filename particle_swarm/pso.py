@@ -4,7 +4,7 @@ import numpy as np
 import ray
 from numba import jit
 
-from particle_swarm.test_functions import sphere_np
+from particle_swarm.tests.linear_regression import boston
 
 NUM_CPUS = 8
 PRECISION = 6
@@ -64,7 +64,7 @@ def _current_score_is_better_than_best_score(current_score, best_score):
 
 @ray.remote
 def _score(pos):
-    return sphere_np(pos)
+    return boston(pos)
 
 
 @ray.remote
