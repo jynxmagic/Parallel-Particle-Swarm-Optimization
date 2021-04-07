@@ -1,5 +1,5 @@
-from numpy import sum
+from numpy import sum as npsum
 
 
 def sphere_np(vector):
-    return sum(vector ** 2)
+    return npsum(vector ** 2)
