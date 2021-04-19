@@ -7,7 +7,7 @@ FILENAME = "boston.csv"
 
 
 def get_coef(x, y):
-    #pearsons coef
+    # pearsons coef
     r_t = (y.size * np.sum(x * y)) - (np.sum(x) * np.sum(y))
     r_b = (y.size * np.sum(x ** 2) - np.sum(x) ** 2) * (
         y.size * np.sum(y ** 2) - np.sum(y) ** 2
@@ -18,10 +18,10 @@ def get_coef(x, y):
 
 
 def calculate_line(x, y):
-    m = x.size * np.sum(x * y) - np.sum(x) * np.sum(y) #slope
+    m = x.size * np.sum(x * y) - np.sum(x) * np.sum(y)  # slope
     m = m / (x.size * np.sum(x ** 2) - np.sum(x) ** 2)
 
-    b = np.sum(y) - m * np.sum(x) # y-intercept
+    b = np.sum(y) - m * np.sum(x)  # y-intercept
     b = b / x.size
 
     return [m, b]
@@ -51,10 +51,8 @@ def boston(z):
 
     line = calculate_line(x, y)
 
-    line[0] = z # particle swarm ovveride
+    line[0] = z  # particle swarm ovveride
 
-    mean_err = mse(line,x,y)
+    mean_err = mse(line, x, y)
 
     return mean_err
-
-    np.set_printoptions(suppress=True)  # non-scientific notation
