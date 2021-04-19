@@ -7,27 +7,27 @@ from numba import jit
 from particle_swarm.tests.linear_regression import boston
 
 NUM_CPUS = 8
-PRECISION = 6
+PRECISION = 20
 # hyper-params
 INERTIA = 0.9
 INDIVIDUAL_WEIGHT = 0.5
 SOCIAL_WEIGHT = 0.3
 LEARNING_RATE = 0.7
-PARTICLE_AMOUNT = 20
+PARTICLE_AMOUNT = 100
 # search space
-DIMENSIONS = 2
+DIMENSIONS = 1
 TARGET_SCORE = 0
 MIN_POS = 0
 MAX_POS = 20
-MAX_ITERATIONS = 1000
+MAX_ITERATIONS = 500
 # dtypes
 PARTICLE_DT = np.dtype(
     [
-        ("curr_pos", np.float64, DIMENSIONS),
+        ("curr_pos", np.float64, (DIMENSIONS,)),
         ("curr_score", np.float64),
         ("best_score", np.float64),
-        ("best_pos", np.float64, DIMENSIONS),
-        ("velocity", np.float64, DIMENSIONS),
+        ("best_pos", np.float64, (DIMENSIONS,)),
+        ("velocity", np.float64, (DIMENSIONS,)),
     ],
 )
 
@@ -64,7 +64,7 @@ def _current_score_is_better_than_best_score(current_score, best_score):
 
 @ray.remote
 def _score(pos):
-    return boston(pos)
+    return boston(pos[0])
 
 
 @ray.remote
@@ -113,7 +113,7 @@ def pso(particles):
 
         run_count += 1
 
-    return [particles, run_count]
+    return [particles, run_count, gbest_p, gbest_s]
 
 
 def run():
