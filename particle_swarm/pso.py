@@ -2,24 +2,23 @@ import time
 
 import numpy as np
 import ray
-from numba import jit
 
 from particle_swarm.tests.linear_regression import boston
 
-NUM_CPUS = 8
+NUM_CPUS = 16
 PRECISION = 20
 # hyper-params
 INERTIA = 0.9
-INDIVIDUAL_WEIGHT = 0.5
-SOCIAL_WEIGHT = 0.3
+INDIVIDUAL_WEIGHT = 0.9
+SOCIAL_WEIGHT = 0.8
 LEARNING_RATE = 0.7
-PARTICLE_AMOUNT = 100
+PARTICLE_AMOUNT = 200
 # search space
-DIMENSIONS = 1
+DIMENSIONS = 14
 TARGET_SCORE = 0
 MIN_POS = 0
 MAX_POS = 20
-MAX_ITERATIONS = 500
+MAX_ITERATIONS = 150
 # dtypes
 PARTICLE_DT = np.dtype(
     [
@@ -51,7 +50,6 @@ def _build_particles():
     return i_particles
 
 
-@jit(nopython=True)
 def _current_score_is_better_than_best_score(current_score, best_score):
     if best_score is None:
         return True
@@ -64,7 +62,7 @@ def _current_score_is_better_than_best_score(current_score, best_score):
 
 @ray.remote
 def _score(pos):
-    return boston(pos[0])
+    return boston(pos)
 
 
 @ray.remote
@@ -98,6 +96,7 @@ def pso(particles):
                     particle["curr_score"],
                     gbest_s,
                 ):
+                    print(run_count, gbest_s, gbest_p)
                     gbest_s = particle["curr_score"]
                     gbest_p = particle["curr_pos"]
                 particles[index] = particle
