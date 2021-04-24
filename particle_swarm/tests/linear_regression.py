@@ -1,4 +1,3 @@
-import pprint
 from math import sqrt
 from pathlib import Path
 
@@ -11,7 +10,7 @@ TARGET_COLUMN = 13
 
 def generate_predictions(data, m_factors, b0):
     row_count, col_count = data.shape
-    col_count -= 1  # last row is y
+    col_count -= 1  # last col is y
 
     # calculate predictions for each row
     pred_rows = []
@@ -26,37 +25,30 @@ def generate_predictions(data, m_factors, b0):
 def rmse(y_preds, y_actuals):
     row_count = len(y_actuals)
     # calculate rmse
-    i = 0
     sum_of_square_err = 0
-    for pred in y_preds:
-        actual = y_actuals[i]
+    for index, pred in enumerate(y_preds):
+        actual = y_actuals[index]
         diff = actual - pred
         sum_of_square_err += diff ** 2
-        i = i + 1
     sum_of_square_err = sum_of_square_err / row_count
     sum_of_square_err = sqrt(sum_of_square_err)
     return sum_of_square_err
 
 def show_scatter(y, pred_rows):
     pyplot.scatter(y, pred_rows)
-    y_lim = pyplot.ylim()
-    x_lim = pyplot.xlim()
-    pyplot.plot(x_lim, y_lim, 'k-', color='r')
-    pyplot.ylim(y_lim)
-    pyplot.xlim(x_lim)
     pyplot.show()
 
-def boston(z):
-    data = np.loadtxt(Path.cwd() / FILENAME)
+def boston(particles):
+    data = np.loadtxt(Path(__file__).parent.absolute() / FILENAME)
 
     target = TARGET_COLUMN
     y = data[..., target]
 
-    b0 = z[len(z) - 1]  # last item is intersect from particle swarm
+    b0 = particles[len(particles) - 1]  # last item is intersect from particle swarm
 
-    predictions = generate_predictions(data, z, b0)
+    predictions = generate_predictions(data, particles, b0)
     root_sqaured_error = rmse(predictions, y)
-    show_scatter(y,predictions)
+    #show_scatter(y,predictions)
 
     return root_sqaured_error
 
@@ -64,11 +56,11 @@ def boston(z):
 print(
     boston(
         [
-0.31508836290904185,   0.10215494010464843 ,  0.17640535181769604,
- -0.3389466361246862  ,  0.214185500169508   ,  0.2541842545786732,
-  0.017954290537926687 ,-0.2893618089742949 ,   0.38518203275115304,
- -0.011031121093775027 , 0.11782033008772752 ,  0.05271352960511161,
- -0.39711665111370104  , 0.48755429311700427
+-0.08486625408953588,   0.1076806851258205 ,  -0.34254048462604053,
+ -0.05397952819161085,  -0.264129182712456,     0.17680983829948105,
+  0.09105753747310638,  -0.049446094084896586,  0.08843132271793035,
+  0.009218846082991602,  0.17882554165928058,   0.04765998014759277,
+ -0.5279020901957536,   -0.27173104098166445,
         ]
     )
 )

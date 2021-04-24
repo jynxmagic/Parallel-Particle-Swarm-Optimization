@@ -5,20 +5,20 @@ import ray
 
 from particle_swarm.tests.linear_regression import boston
 
-NUM_CPUS = 16
+NUM_CPUS = 8
 PRECISION = 20
 # hyper-params
+INDIVIDUAL_WEIGHT = 2.8
+SOCIAL_WEIGHT = 1.3
 INERTIA = 0.9
-INDIVIDUAL_WEIGHT = 0.6
-SOCIAL_WEIGHT = 0.9
-LEARNING_RATE = 0.8
-PARTICLE_AMOUNT = 100
+LEARNING_RATE = 0.7
+PARTICLE_AMOUNT = 1000
 # search space
 DIMENSIONS = 14
 TARGET_SCORE = 0
 MIN_POS = 0
 MAX_POS = 20
-MAX_ITERATIONS = 200
+MAX_ITERATIONS = 100
 # dtypes
 PARTICLE_DT = np.dtype(
     [
@@ -34,6 +34,11 @@ ray.init(num_cpus=NUM_CPUS)
 
 
 def _build_particles():
+    """Generates and returns particles defined by PARTICLE_DT.
+
+    Returns:
+        np.array: numpy array of PARTICLE_DT, size PARTICLE_AMOUNT
+    """
     i_particles = np.empty(PARTICLE_AMOUNT, dtype=PARTICLE_DT)
 
     position = np.random.default_rng().uniform(
@@ -51,6 +56,15 @@ def _build_particles():
 
 
 def _current_score_is_better_than_best_score(current_score, best_score):
+    """Calculate the difference between current_score and best_score to TARGET_SCORE.
+
+    Args:
+        current_score (float): current score
+        best_score (float): best score
+
+    Returns:
+        bool: True if current_score is closer to TARGET_SCORE.
+    """
     if best_score is None:
         return True
 
@@ -75,6 +89,14 @@ def _calc_vel_t(particle, gbest_p, r_1, r_2):
 
 
 def pso(particles):
+    """Run the particle swarm until end conditions have been satisfied.
+
+    Args:
+        particles (np.array): particle swarm to iterate over
+
+    Returns:
+        array: returns swarm[0], total runs[1], swarm best position[2], swarm best score[3].
+    """
     gbest_p = None
     gbest_s = np.inf
 
@@ -96,32 +118,29 @@ def pso(particles):
                     particle["curr_score"],
                     gbest_s,
                 ):
-                    print(run_count, gbest_s, gbest_p)
                     gbest_s = particle["curr_score"]
                     gbest_p = particle["curr_pos"]
+                    print(run_count, gbest_s, gbest_p)
                 particles[index] = particle
 
         # calculate velocity
         r_1 = np.random.default_rng().random()
         r_2 = np.random.default_rng().random()
         vel_t = ray.get(
-            [_calc_vel_t.remote(particle, gbest_p, r_1, r_2) for particle in particles]
+            [_calc_vel_t.remote(particle, gbest_p, r_1, r_2) for particle in particles],
         )
         particles["curr_pos"] = LEARNING_RATE * (particles["curr_pos"] + vel_t)
         particles["velocity"] = vel_t
 
         run_count += 1
 
-    return [particles, run_count, gbest_p, gbest_s]
+    return [run_count, gbest_p, gbest_s]
 
 
 def run():
-    np.set_printoptions(precision=PRECISION, suppress=True)  # non-scientific notation
-    start = time.time()
+    """Method used as a standard entry point to call the script.
 
-    res = pso(_build_particles())
-
-    end = time.time()
-
-    print("time taken: ", end - start)
-    return res
+    Returns:
+        array: results of the particle swarm
+    """
+    return pso(_build_particles())
