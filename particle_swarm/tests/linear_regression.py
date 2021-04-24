@@ -22,6 +22,7 @@ def generate_predictions(data, m_factors, b0):
         pred_rows.append(y_pred_for_row)
     return pred_rows
 
+
 def rmse(y_preds, y_actuals):
     row_count = len(y_actuals)
     # calculate rmse
@@ -34,9 +35,11 @@ def rmse(y_preds, y_actuals):
     sum_of_square_err = sqrt(sum_of_square_err)
     return sum_of_square_err
 
+
 def show_scatter(y, pred_rows):
     pyplot.scatter(y, pred_rows)
     pyplot.show()
+
 
 def boston(particles):
     data = np.loadtxt(Path(__file__).parent.absolute() / FILENAME)
@@ -48,7 +51,7 @@ def boston(particles):
 
     predictions = generate_predictions(data, particles, b0)
     root_sqaured_error = rmse(predictions, y)
-    #show_scatter(y,predictions)
+    # show_scatter(y,predictions)
 
     return root_sqaured_error
 
@@ -56,11 +59,20 @@ def boston(particles):
 print(
     boston(
         [
--0.08486625408953588,   0.1076806851258205 ,  -0.34254048462604053,
- -0.05397952819161085,  -0.264129182712456,     0.17680983829948105,
-  0.09105753747310638,  -0.049446094084896586,  0.08843132271793035,
-  0.009218846082991602,  0.17882554165928058,   0.04765998014759277,
- -0.5279020901957536,   -0.27173104098166445,
+            -0.08486625408953588,
+            0.1076806851258205,
+            -0.34254048462604053,
+            -0.05397952819161085,
+            -0.264129182712456,
+            0.17680983829948105,
+            0.09105753747310638,
+            -0.049446094084896586,
+            0.08843132271793035,
+            0.009218846082991602,
+            0.17882554165928058,
+            0.04765998014759277,
+            -0.5279020901957536,
+            -0.27173104098166445,
         ]
     )
 )
