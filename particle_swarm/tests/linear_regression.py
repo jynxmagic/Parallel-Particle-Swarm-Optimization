@@ -2,57 +2,77 @@ from math import sqrt
 from pathlib import Path
 
 import numpy as np
+from matplotlib import pyplot
 
 FILENAME = "boston.csv"
+TARGET_COLUMN = 13
 
 
-def get_coef(x, y):
-    # pearsons coef
-    r_t = (y.size * np.sum(x * y)) - (np.sum(x) * np.sum(y))
-    r_b = (y.size * np.sum(x ** 2) - np.sum(x) ** 2) * (
-        y.size * np.sum(y ** 2) - np.sum(y) ** 2
+def generate_predictions(data, m_factors, b0):
+    row_count, col_count = data.shape
+    col_count -= 1  # last col is y
+
+    # calculate predictions for each row
+    pred_rows = []
+    for row in range(row_count):
+        y_pred_for_row = b0  # y = b0
+        for index in range(col_count):
+            m = m_factors[index]
+            y_pred_for_row += m * data[row][index]  # y += sum(mx)
+        pred_rows.append(y_pred_for_row)
+    return pred_rows
+
+
+def rmse(y_preds, y_actuals):
+    row_count = len(y_actuals)
+    # calculate rmse
+    sum_of_square_err = 0
+    for index, pred in enumerate(y_preds):
+        actual = y_actuals[index]
+        diff = actual - pred
+        sum_of_square_err += diff ** 2
+    sum_of_square_err = sum_of_square_err / row_count
+    sum_of_square_err = sqrt(sum_of_square_err)
+    return sum_of_square_err
+
+
+def show_scatter(y, pred_rows):
+    pyplot.scatter(y, pred_rows)
+    pyplot.show()
+
+
+def boston(particles):
+    data = np.loadtxt(Path(__file__).parent.absolute() / FILENAME)
+
+    target = TARGET_COLUMN
+    y = data[..., target]
+
+    b0 = particles[len(particles) - 1]  # last item is intersect from particle swarm
+
+    predictions = generate_predictions(data, particles, b0)
+    root_sqaured_error = rmse(predictions, y)
+    # show_scatter(y,predictions)
+
+    return root_sqaured_error
+
+
+print(
+    boston(
+        [
+            -0.08486625408953588,
+            0.1076806851258205,
+            -0.34254048462604053,
+            -0.05397952819161085,
+            -0.264129182712456,
+            0.17680983829948105,
+            0.09105753747310638,
+            -0.049446094084896586,
+            0.08843132271793035,
+            0.009218846082991602,
+            0.17882554165928058,
+            0.04765998014759277,
+            -0.5279020901957536,
+            -0.27173104098166445,
+        ]
     )
-    r_b = sqrt(r_b)
-    r = r_t / r_b
-    return r
-
-
-def calculate_line(x, y):
-    m = x.size * np.sum(x * y) - np.sum(x) * np.sum(y)  # slope
-    m = m / (x.size * np.sum(x ** 2) - np.sum(x) ** 2)
-
-    b = np.sum(y) - m * np.sum(x)  # y-intercept
-    b = b / x.size
-
-    return [m, b]
-
-
-def mse(line, x, y):
-    size = x.size
-    diff = 0
-    for index in range(size):
-        y_actual = y[index]
-        x_actual = x[index]
-
-        y_pred = line[0] * x_actual + line[1]  # y = mx+b
-
-        diff += (y_actual - y_pred) ** 2
-
-    return diff / size
-
-
-def boston(z):
-    data = np.loadtxt(Path.cwd() / FILENAME)
-
-    y = data[..., 13]
-    x = data[:, 5]
-
-    coef = get_coef(x, y)
-
-    line = calculate_line(x, y)
-
-    line[0] = z  # particle swarm ovveride
-
-    mean_err = mse(line, x, y)
-
-    return mean_err
+)
