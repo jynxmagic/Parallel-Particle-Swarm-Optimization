@@ -1,21 +1,21 @@
 import numpy as np
 import ray
 
-from particle_swarm.tests.linear_regression import boston
+from particle_swarm.tests.optimization_test_functions import rosenbrock as test
 
-NUM_CPUS = 8
-PRECISION = 20
+NUM_CPUS = 1
+PRECISION = 2
 # hyper-params
 INDIVIDUAL_WEIGHT = 2.8
 SOCIAL_WEIGHT = 1.3
 INERTIA = 0.9
 LEARNING_RATE = 0.7
-PARTICLE_AMOUNT = 1000
+PARTICLE_AMOUNT = 30
 # search space
-DIMENSIONS = 14
+DIMENSIONS = 20
 TARGET_SCORE = 0
-MIN_POS = 0
-MAX_POS = 20
+MIN_POS = -5
+MAX_POS = 10
 MAX_ITERATIONS = 100
 # dtypes
 PARTICLE_DT = np.dtype(
@@ -74,7 +74,7 @@ def _current_score_is_better_than_best_score(current_score, best_score):
 
 @ray.remote
 def _score(pos):
-    return boston(pos)
+    return test(pos)
 
 
 @ray.remote
