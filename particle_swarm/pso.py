@@ -1,10 +1,10 @@
 import numpy as np
 import ray
 
-from particle_swarm.tests.optimization_test_functions import rosenbrock as test
+from particle_swarm.tests.optimization_test_functions import sphere_np as fitness
 
-NUM_CPUS = 1
-PRECISION = 2
+NUM_CPUS = 8
+PRECISION = 5
 # hyper-params
 INDIVIDUAL_WEIGHT = 2.8
 SOCIAL_WEIGHT = 1.3
@@ -32,7 +32,7 @@ ray.init(num_cpus=NUM_CPUS)
 
 
 def _build_particles():
-    """Generates and returns particles defined by PARTICLE_DT.
+    """Instantiate position and return particles defined by PARTICLE_DT.
 
     Returns:
         np.array: numpy array of PARTICLE_DT, size PARTICLE_AMOUNT
@@ -74,7 +74,7 @@ def _current_score_is_better_than_best_score(current_score, best_score):
 
 @ray.remote
 def _score(pos):
-    return test(pos)
+    return fitness(pos)
 
 
 @ray.remote
